@@ -1,0 +1,1 @@
+# конфиг Celery + Redis

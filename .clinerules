@@ -1,0 +1,12 @@
+# Rules
+- Tool calls ONLY in XML format: <execute_command>, <write_to_file>, <read_file>
+- NEVER output JSON like {"name": "...", "arguments": {...}}
+- Windows environment: use PowerShell syntax (New-Item, not touch/mkdir -p)
+- Do not read files outside src/ and tests/
+- One file per request — do not scan the project
+## Project structure
+- src/news_scruper/domain/ — pure logic, NO LangChain imports
+- src/news_scruper/agents/ — LangChain/LangGraph only here
+- src/news_scruper/infra/ — Ollama/Langfuse/DB clients
+- src/news_scruper/api/ — FastAPI
+- Only modify files in src/news_scruper/ and tests/

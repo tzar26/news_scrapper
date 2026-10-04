@@ -1,0 +1,1 @@
+# GET /articles, GET /articles/{id}

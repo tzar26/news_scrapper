@@ -1,0 +1,78 @@
+# .continuerules — правила разработки для news_scraper
+
+## 🚨 КРИТИЧНО: Pydantic v2 — единственный допустимый стиль
+
+Ты пишешь код на Python 3.12 с Pydantic v2. Забудь про v1-синтаксис.
+
+### ЗАПРЕЩЕНО (Pydantic v1, устарело)
+- `class Config:` — использовать `model_config = ConfigDict(...)`
+- `@validator(...)` — использовать `@field_validator(...)` + `@classmethod`
+- `from_attributes = True` — не нужно, если нет ORM
+- Опциональные поля без явного `= None` — в v2 они обязательные
+- `constr(...)`, `conint(...)` — использовать `Annotated[str, Field(...)]` или `Field(...)`
+
+### ОБЯЗАТЕЛЬНО
+- `model_config = ConfigDict(...)` сразу после docstring класса
+- `Field(description="...")` у КАЖДОГО поля
+- `examples=[...]` там, где это полезно для документации
+- Валидаторы: `@field_validator("field")` + `@classmethod` + `raise ValueError`
+- Docstring у класса и у каждого валидатора
+
+### ЭТАЛОН Pydantic v2
+
+```python
+from __future__ import annotations
+
+from datetime import datetime
+from enum import StrEnum
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, field_validator
+
+
+class Country(StrEnum):
+    """Страна, к которой относится сущность."""
+
+    USA = "usa"
+    RUSSIA = "russia"
+
+
+class Example(BaseModel):
+    """Краткое описание назначения модели.
+
+    Все поля обязательны, кроме `note`.
+    """
+
+    model_config = ConfigDict(
+        extra="forbid",
+        str_strip_whitespace=True,
+    )
+
+    url: HttpUrl = Field(
+        description="Канонический URL",
+        examples=["https://example.com/page"],
+    )
+    title: Annotated[str, Field(min_length=5, max_length=500)] = Field(
+        description="Заголовок",
+    )
+    country: Country = Field(
+        description="Страна",
+    )
+    published_at: datetime = Field(
+        description="Дата публикации (timezone-aware)",
+    )
+    note: str | None = Field(
+        default=None,
+        description="Опциональная заметка",
+    )
+
+    @field_validator("published_at")
+    @classmethod
+    def _require_timezone(cls, v: datetime) -> datetime:
+        """Даты без timezone недопустимы."""
+        if v.tzinfo is None:
+            raise ValueError(
+                "published_at должен быть timezone-aware. "
+                "Используйте timezone.utc при парсинге."
+            )
+        return v
