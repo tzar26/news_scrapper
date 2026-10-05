@@ -1,52 +1,32 @@
-# Pydantic (RawNewsItem, SentimentResult, ...)
-from enum import StrEnum
+from __future__ import annotations
 
-class Country(StrEnum):
-    USA = "usa"
-    RUSSIA = "russia"
-    CHINA = "china"
-    OTHER = "other"
-
-class Sentiment(StrEnum):
-    """Тональность новости."""
-
-    POSITIVE = "positive"
-    NEUTRAL = "neutral"
-    NEGATIVE = "negative"
-
-class Category(StrEnum):
-    """Тематическая категория новости."""
-
-    POLITICS = "politics"
-    CURRENCY = "currency"
-    STOCKS = "stocks"
-    KEY_RATES = "key_rates"
-    TECHNOLOGY = "technology"
-    ENTERTAINMENT = "entertainment"
-    BUSINESS = "business"
-    OTHER = "other"
-
-
-from pydantic import BaseModel, HttpUrl, validator
 from datetime import datetime
-from typing import Optional
+from typing import Annotated
+
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, model_validator
+
+from .enums import Category, Country
+
 
 class RawNewsItem(BaseModel):
-    url: HttpUrl
-    title: str
-    source: str
-    country: Country
-    category: Category = Category.OTHER
-    published_at: datetime
-    text: str
-    summary: Optional[str]
+    """Raw news item model."""
 
-    class Config:
-        extra = "forbid"
-        str_strip_whitespace = True
+    url: HttpUrl = Field(description='URL of the news item')
+    title: Annotated[str, Field(min_length=1, max_length=500)] = Field(
+        description='Title of the news item'
+    )
+    source: str = Field(description='Source of the news item')
+    country: Country = Field(description='Country of the news item')
+    category: Category = Field(default=Category.OTHER, description='Category of the news item')
+    published_at: datetime = Field(description='Publication date and time of the news item')
+    text: str = Field(description='Text of the news item')
+    summary: str | None = Field(default=None, description='Summary of the news item')
 
-    @validator('published_at', pre=True)
-    def check_timezone(cls, value: datetime):
-        if value.tzinfo is None:
-            raise ValueError("Published_at must have a timezone")
+    model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
+
+    @model_validator(mode='after')
+    @classmethod
+    def check_timezone(cls, value):
+        if value.published_at.tzinfo is None:
+            raise ValueError('Published_at must have a timezone')
         return value

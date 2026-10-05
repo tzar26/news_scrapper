@@ -1,0 +1,16 @@
+* text=auto eol=lf
+
+# Бинарные — не трогать
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+
+# Windows-скрипты остаются CRLF (иначе PowerShell может ругаться)
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
