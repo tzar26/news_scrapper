@@ -25,8 +25,7 @@ class RawNewsItem(BaseModel):
     model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
 
     @model_validator(mode='after')
-    @classmethod
-    def check_timezone(cls, value):
-        if value.published_at.tzinfo is None:
+    def check_timezone(self):
+        if self.published_at.tzinfo is None:
             raise ValueError('Published_at must have a timezone')
-        return value
+        return self

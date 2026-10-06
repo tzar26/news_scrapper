@@ -88,3 +88,13 @@ class Example(BaseModel):
 - Trailing whitespace в конце строк — не допускается.
 - Отступы — 4 пробела, без табов.
 - Не выравнивай `=` подолгу — ruff format всё равно перепишет.
+
+### ЗАПРЕЩЕНО (устарело в Pydantic 2.12+)
+- `@model_validator(mode='after')` с `@classmethod` и `(cls, model)` —
+  использовать instance-метод: `def _validate(self) -> 'Model': ... return self`
+
+### ОБЯЗАТЕЛЬНО для model_validator(mode='after')
+- Без `@classmethod`.
+- Первый аргумент — `self`.
+- Внутри обращаться к `self.field`, а не `model.field`.
+- Возвращать `self`.
