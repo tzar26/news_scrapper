@@ -35,4 +35,5 @@ class Category(StrEnum):
     SPORTS = 'sports'
     HEALTH = 'health'
     ENVIRONMENT = 'environment'
+    BUSINESS = 'business'
     OTHER = 'other'
