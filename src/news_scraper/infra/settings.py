@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     database_url: str = Field(
         description='DSN для PostgreSQL, например postgresql+asyncpg://user:pass@localhost:5432/news'
     )
+    redis_url: str = Field(
+        default='redis://localhost:6379/0',
+        description='DSN для Redis (брокер Celery)',
+    )
     ollama_base_url: str = Field(default='http://localhost:11434', description='URL Ollama')
     log_level: str = Field(default='INFO', description='Уровень логирования')
 
