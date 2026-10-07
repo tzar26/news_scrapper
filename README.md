@@ -6,22 +6,28 @@
 ## Стек
 
 - Python 3.12
-- Scrapy + scrapy-playwright — скрапинг
-- FastAPI + Pydantic — API
-- SQLite (aiosqlite) — хранилище
+- **httpx** + **feedparser** — сбор RSS-источников
+- **Pydantic v2** — модели данных и API
+- FastAPI + SQLAlchemy (async) + **PostgreSQL + pgvector** — API и хранилище (в работе)
+- **Celery + Redis** — фоновые задачи (в работе)
 - **LangChain / LangGraph** — оркестрация агентов (только в `agents/`)
-- **Langfuse (self-hosted)** — наблюдаемость
 - **Ollama** — локальный инференс LLM (qwen2.5-coder)
+- **Langfuse (self-hosted)** — наблюдаемость (позже)
 
-## Архитектура (MVP, делаем по шагам)
+## Архитектура
 
 Проект следует принципу **изоляции доменной логики от фреймворков**:
 
-- `domain/` — чистая бизнес-логика (Scrapy, NLP, Pydantic-модели).
-  НЕ зависит от LangChain, Ollama SDK и любых внешних фреймворков.
+- `domain/` — чистая бизнес-логика: Pydantic-модели, enum'ы, парсеры,
+  Protocol-контракты. НЕ зависит от LangChain, Ollama SDK, httpx и
+  любых внешних фреймворков.
+- `scraper/` — сбор новостей: источники (RSS), парсеры, дедупликация.
+  Реализует контракт `Source` из `domain/`.
+- `db/` — персистентность: SQLAlchemy ORM, репозитории, миграции.
 - `agents/` — слой оркестрации агентов. Здесь живёт LangChain/LangGraph.
 - `infra/` — инфраструктурные адаптеры (клиенты Ollama, Langfuse, БД).
-- `api/` — FastAPI-слой. Знает только о `domain/` и `agents/`.
+- `api/` — FastAPI-слой. Знает только о `domain/`, `scraper/`, `db/`,
+  `agents/`.
 
 ### Почему так
 
@@ -46,24 +52,27 @@
 - Версии фиксируются в `requirements.txt` с точностью до патча.
 - При обновлении — прогон полного набора тестов.
 
-### Шаг 1: Скрапер
-- Scrapy-проект, асинхронные пауки
-- Сбор: заголовок, URL, дата, источник, текст
-- Сохранение сырых новостей в SQLite
+## Прогресс
 
-### Шаг 2: NLP-обработка
-- Sentiment: положительная / нейтральная / отрицательная
-- Суммаризация: краткая суть новости
-- Реализация через локальный Ollama (qwen2.5)
+### Сделано
+- `domain/models.py`, `domain/enums.py` — Pydantic v2 модели
+- `scraper/parsers.py::parse_rss` — парсер RSS → `RawNewsItem`
+- `scraper/sources/` — базовый `RSSSource`, реестр, реализованные источники:
+  Kommersant (РФ), NPR (США), CNN (США)
+- `scripts/run_scraper.py` — ручной запуск сбора
+- Тесты `tests/domain/`
 
-### Шаг 3: REST API
-- FastAPI-сервис поверх SQLite
-- GET /news — список новостей с фильтрами
-- GET /news/{id} — детали
-- GET /stats — агрегаты по sentiment и странам
+### В работе
+- Хранилище: PostgreSQL + pgvector, ORM, миграции Alembic
+- Дедупликация статей
+- Celery-задачи: регулярный опрос источников
+- Docker Compose: app + postgres + redis
 
-### Шаг 4 (позже): UI
-- Простой веб-интерфейс на FastAPI + Jinja2
+### Дальше
+- Обогащение: NER, тональность, метрики, эмбеддинги
+- RAG: `POST /ask` с цитированием
+- Агент на LangGraph: tool calling, `POST /agent`
+- Дашборд Streamlit
 
 ## Стиль
 - Type hints обязательны
