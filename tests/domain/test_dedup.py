@@ -2,9 +2,9 @@ from datetime import UTC, datetime
 
 import pytest
 
+from news_scraper.domain.dedup import content_hash
 from news_scraper.domain.enums import Category, Country
 from news_scraper.domain.models import RawNewsItem
-from news_scraper.scraper.dedup import content_hash
 
 
 def make_item(title, text, url: str = None):
