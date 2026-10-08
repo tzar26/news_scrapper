@@ -4,21 +4,10 @@ from enum import StrEnum
 
 
 class Country(StrEnum):
-    """
-    Enum representing different countries.
-    """
-
-    USA = 'USA'
-    CANADA = 'Canada'
-    MEXICO = 'Mexico'
-    GERMANY = 'Germany'
-    FRANCE = 'France'
-    JAPAN = 'Japan'
-    CHINA = 'China'
-    INDIA = 'India'
-    UK = 'UK'
-    AUSTRALIA = 'Australia'
-    RUSSIA = 'Russia'
+    USA = 'usa'
+    RUSSIA = 'russia'
+    CHINA = 'china'
+    OTHER = 'other'
 
 
 class Sentiment(StrEnum):

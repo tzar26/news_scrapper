@@ -98,3 +98,15 @@ class Example(BaseModel):
 - Первый аргумент — `self`.
 - Внутри обращаться к `self.field`, а не `model.field`.
 - Возвращать `self`.
+
+## Существующие enum'ы — НЕ переопределять
+
+В проекте УЖЕ есть в `domain/enums.py`:
+- `Country`: USA, RUSSIA, CHINA, OTHER (все значения lowercase)
+- `Sentiment`: POSITIVE, NEUTRAL, NEGATIVE
+- `Category`: POLITICS, CURRENCY, STOCKS, KEY_RATES, TECHNOLOGY,
+  ENTERTAINMENT, BUSINESS, OTHER
+
+НИКОГДА не создавай новые классы Country/Sentiment/Category.
+НИКОГДА не переписывай `domain/enums.py` без явной команды пользователя.
+ВСЕГДА импортируй через `from news_scraper.domain.enums import ...`.
