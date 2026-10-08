@@ -99,14 +99,15 @@ class Example(BaseModel):
 - Внутри обращаться к `self.field`, а не `model.field`.
 - Возвращать `self`.
 
-## Существующие enum'ы — НЕ переопределять
+## Существующие enum'ы — координация
 
-В проекте УЖЕ есть в `domain/enums.py`:
-- `Country`: USA, RUSSIA, CHINA, OTHER (все значения lowercase)
+В `src/news_scraper/domain/enums.py`:
+- `Country`: USA, RUSSIA, CHINA, OTHER (lowercase) — расширять только по явной просьбе
 - `Sentiment`: POSITIVE, NEUTRAL, NEGATIVE
-- `Category`: POLITICS, CURRENCY, STOCKS, KEY_RATES, TECHNOLOGY,
-  ENTERTAINMENT, BUSINESS, OTHER
+- `Category`: политика/бизнес/энергетика/ИТ/финансы + общие рубрики
 
-НИКОГДА не создавай новые классы Country/Sentiment/Category.
-НИКОГДА не переписывай `domain/enums.py` без явной команды пользователя.
-ВСЕГДА импортируй через `from news_scraper.domain.enums import ...`.
+Правила:
+- НЕ переписывай enum'ы без явной команды.
+- Если нужна новая рубрика/страна — предложи, но не добавляй молча.
+- ВСЕГДА импортируй через `from news_scraper.domain.enums import ...`.
+- Значения — строго lowercase (snake_case для составных).

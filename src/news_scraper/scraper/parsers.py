@@ -9,15 +9,31 @@ from news_scraper.domain.enums import Category, Country
 from news_scraper.domain.models import RawNewsItem
 
 _CATEGORY_MAP: dict[str, Category] = {
+    # Русские (Kommersant, ТАСС и др.)
     'политика': Category.POLITICS,
-    'politics': Category.POLITICS,
     'экономика': Category.ECONOMY,
-    'economy': Category.ECONOMY,
     'бизнес': Category.BUSINESS,
-    'business': Category.BUSINESS,
+    'финансы': Category.ECONOMY,
     'технологии': Category.TECHNOLOGY,
+    'спорт': Category.SPORTS,
+    'культура': Category.CULTURE,
+    'здоровье': Category.HEALTH,
+    'экология': Category.ENVIRONMENT,
+    'происшествия': Category.CONFLICTS,
+    # Английские (NPR, CNN и др.)
+    'politics': Category.POLITICS,
+    'world': Category.POLITICS,
+    'business': Category.BUSINESS,
+    'economy': Category.ECONOMY,
     'technology': Category.TECHNOLOGY,
-    # добавляй по мере необходимости
+    'tech': Category.TECHNOLOGY,
+    'sports': Category.SPORTS,
+    'culture': Category.CULTURE,
+    'arts': Category.CULTURE,
+    'health': Category.HEALTH,
+    'environment': Category.ENVIRONMENT,
+    'science': Category.TECHNOLOGY,
+    'world news': Category.POLITICS,
 }
 
 
