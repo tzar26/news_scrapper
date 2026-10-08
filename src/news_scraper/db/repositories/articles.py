@@ -97,3 +97,52 @@ class ArticleRepository:
             stmt = stmt.where(Article.category == category)
         result = await self._session.execute(stmt)
         return result.scalar_one()
+
+    async def stats(self) -> dict:
+        """
+        Возвращает агрегированную статистику по статьям.
+        Ключи: total, by_country, by_source, by_category,
+        latest_published_at, earliest_published_at.
+        by_country/by_source/by_category — списки dict вида
+        {'country'|'source'|'category': str, 'count': int}, сортировка
+        по count DESC.
+        """
+        total = await self._session.scalar(select(func.count()).select_from(Article))
+
+        country_rows = await self._session.execute(
+            select(Article.country, func.count().label('count'))
+            .group_by(Article.country)
+            .order_by(func.count().desc())
+        )
+        by_country = [{'country': row.country, 'count': row.count} for row in country_rows]
+
+        source_rows = await self._session.execute(
+            select(Article.source, func.count().label('count'))
+            .group_by(Article.source)
+            .order_by(func.count().desc())
+        )
+        by_source = [{'source': row.source, 'count': row.count} for row in source_rows]
+
+        category_rows = await self._session.execute(
+            select(Article.category, func.count().label('count'))
+            .group_by(Article.category)
+            .order_by(func.count().desc())
+        )
+        by_category = [{'category': row.category, 'count': row.count} for row in category_rows]
+
+        date_row = await self._session.execute(
+            select(
+                func.min(Article.published_at).label('earliest'),
+                func.max(Article.published_at).label('latest'),
+            )
+        )
+        dates = date_row.one()
+
+        return {
+            'total': total or 0,
+            'by_country': by_country,
+            'by_source': by_source,
+            'by_category': by_category,
+            'latest_published_at': dates.latest,
+            'earliest_published_at': dates.earliest,
+        }
