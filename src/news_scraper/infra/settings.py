@@ -20,6 +20,14 @@ class Settings(BaseSettings):
     )
     ollama_base_url: str = Field(default='http://localhost:11434', description='URL Ollama')
     log_level: str = Field(default='INFO', description='Уровень логирования')
+    celery_broker_url: str = Field(
+        default='redis://localhost:6379/1',
+        description='DSN брокера Celery (Redis, отдельная БД от основного redis_url)',
+    )
+    celery_result_backend: str = Field(
+        default='redis://localhost:6379/2',
+        description='DSN backend результатов Celery (Redis)',
+    )
 
 
 settings = Settings()
