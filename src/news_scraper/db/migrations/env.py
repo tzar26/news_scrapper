@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 from logging.config import fileConfig
 
+import pgvector.sqlalchemy  # noqa: F401 — регистрирует тип Vector для Alembic
 from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
