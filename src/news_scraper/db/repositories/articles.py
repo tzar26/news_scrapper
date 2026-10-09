@@ -146,3 +146,26 @@ class ArticleRepository:
             'latest_published_at': dates.latest,
             'earliest_published_at': dates.earliest,
         }
+
+    async def get_without_embedding(self, limit: int = 50) -> list[Article]:
+        """
+        Возвращает статьи без эмбеддинга (embedding IS NULL).
+        Сортировка по id DESC (новые первыми), лимит.
+        """
+        stmt = (
+            select(Article)
+            .where(Article.embedding.is_(None))
+            .order_by(Article.id.desc())
+            .limit(limit)
+        )
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
+
+    async def set_embedding(self, article_id: int, embedding: list[float]) -> None:
+        """
+        Сохраняет эмбеддинг для статьи и коммитит.
+        """
+        article = await self._session.get(Article, article_id)
+        if article:
+            article.embedding = embedding
+            await self._session.commit()
