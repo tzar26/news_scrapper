@@ -12,18 +12,18 @@ class OllamaClient:
         self._base_url = (base_url or settings.ollama_base_url).rstrip('/')
         self._client = httpx.AsyncClient(timeout=timeout)
 
-    async def embed(self, text: str, *, model: str = 'nomic-embed-text') -> list[float]:
+    async def embed(self, text: str, *, model: str = 'bge-m3') -> list[float]:
         """Возвращает эмбеддинг текста (список float).
         Args:
             text: текст для эмбеддинга. Если пустой — вернётся
-            нулевой вектор длины 768.
-            model: имя модели в Ollama.
+            нулевой вектор длины 1024.
+            model: имя модели в Ollama (по умолчанию 'bge-m3').
         Raises:
             httpx.HTTPError: при сетевых ошибках или не-2xx ответе.
-            ValueError: если ответ не содержит embeddings или их длина != 768.
+            ValueError: если ответ не содержит embeddings или их длина != 1024.
         """
         if not text.strip():
-            return [0.0] * 768
+            return [0.0] * 1024
 
         response = await self._client.post(
             f'{self._base_url}/api/embed',
@@ -34,8 +34,8 @@ class OllamaClient:
         emb = data.get('embeddings', [])[0]
         if not emb:
             raise ValueError('No embeddings found in response')
-        if len(emb) != 768:
-            raise ValueError(f'Expected 768 dims, got {len(emb)}')
+        if len(emb) != 1024:
+            raise ValueError(f'Expected 1024 dims, got {len(emb)}')
         return list(emb)
 
     async def aclose(self) -> None:

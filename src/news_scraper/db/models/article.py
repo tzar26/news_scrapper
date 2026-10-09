@@ -16,7 +16,7 @@ class Article(Base):
     - content_hash — SHA-256 от нормализованного содержимого,
     ловит дубли с разными URL.
     content_hash — grouping key для перепечаток (не UNIQUE),
-    embedding — вектор nomic-embed-text (768d).
+    embedding — вектор bge-m3 (1024d).
     """
 
     __tablename__ = 'articles'
@@ -35,6 +35,6 @@ class Article(Base):
         server_default=func.now(),
     )
     embedding: Mapped[list[float] | None] = mapped_column(
-        Vector(768),
+        Vector(1024),
         nullable=True,
     )

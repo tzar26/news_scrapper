@@ -11,9 +11,9 @@ async def main() -> None:
     """Считает эмбеддинг двух фраз, печатает dim и cosine similarity."""
     client = OllamaClient()
     try:
-        vec_a = await client.embed('ключевая ставка ЦБ РФ выросла')
-        vec_b = await client.embed('Центробанк повысил ключевую ставку')
-        vec_c = await client.embed('в Москве открыли новый парк')
+        vec_a = await client.embed('ключевая ставка ЦБ РФ выросла', model='bge-m3')
+        vec_b = await client.embed('Центробанк повысил ключевую ставку', model='bge-m3')
+        vec_c = await client.embed('в Москве открыли новый парк', model='bge-m3')
 
         print(f'dim: {len(vec_a)}')
 
