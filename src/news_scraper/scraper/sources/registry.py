@@ -4,12 +4,14 @@ from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.rbk import RBKSource
 from news_scraper.scraper.sources.tass import TASSSource
+from news_scraper.scraper.sources.wsj import WSJSource
 
 ALL_SOURCES: list[type[Source]] = [
     KommersantSource,
     NPRSource,
     RBKSource,
     TASSSource,
+    WSJSource,
 ]
 
 
@@ -22,7 +24,6 @@ def get_sources_by_country(country: Country) -> list[type[Source]]:
 # Россия:
 #   - RBC (https://rssexport.rbc.ru/rbcnews/news/30/full.rss)
 # США:
-#   - WSJ (https://feeds.content.dowjones.io/public/rss/RSSUSnews)
 #   - PBS NewsHour (https://www.pbs.org/newshour/feeds/rss/headlines)
 #   - Politico (https://rss.politico.com/politics-news.xml)
 #   - NYT (https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml)
