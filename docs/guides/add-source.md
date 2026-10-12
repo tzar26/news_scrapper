@@ -59,7 +59,7 @@
 
 ### США
 - ✅ NPR — https://feeds.npr.org/1001/rss.xml
-- ✅ CNN — http://rss.cnn.com/rss/cnn_topstories.rss
+- ⚠️ CNN — мёртвый RSS (отдаёт 2023 год), удалён из реестра
 - ⏳ WSJ — https://feeds.content.dowjones.io/public/rss/RSSUSnews
 - ⏳ PBS NewsHour — https://www.pbs.org/newshour/feeds/rss/headlines
 - ⏳ Politico — https://rss.politico.com/politics-news.xml
