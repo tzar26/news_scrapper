@@ -1,3 +1,4 @@
+from news_scraper.scraper.sources.gtchina import GTChinaSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.rbk import RBKSource
@@ -15,6 +16,7 @@ __all__ = [
     'TASSSource',
     'WSJSource',
     'XinhuaSource',
+    'GTChinaSource',
     'ALL_SOURCES',
     'get_sources_by_country',
     'Source',

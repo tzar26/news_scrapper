@@ -1,5 +1,6 @@
 from news_scraper.domain.enums import Country
 from news_scraper.scraper.sources.base import Source
+from news_scraper.scraper.sources.gtchina import GTChinaSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.rbk import RBKSource
@@ -14,6 +15,7 @@ ALL_SOURCES: list[type[Source]] = [
     TASSSource,
     WSJSource,
     XinhuaSource,
+    GTChinaSource,
 ]
 
 
@@ -29,7 +31,5 @@ def get_sources_by_country(country: Country) -> list[type[Source]]:
 #   - PBS NewsHour (https://www.pbs.org/newshour/feeds/rss/headlines)
 #   - Politico (https://rss.politico.com/politics-news.xml)
 #   - NYT (https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml)
-# Китай:
-#   - Xinhua (проверить актуальный RSS)
 # После добавления — не забыть экспортировать в __init__.py
 # и добавить класс в ALL_SOURCES.
