@@ -54,19 +54,21 @@
 
 ### Россия
 - ✅ Kommersant — https://www.kommersant.ru/RSS/news.xml
-- ⏳ TASS — https://tass.ru/rss/v2.xml
-- ⏳ RBC — https://rssexport.rbc.ru/rbcnews/news/30/full.rss
+- ✅ RBK — https://rssexport.rbc.ru/rbcnews/news/30/full.rss
+- ✅ TASS — https://tass.ru/rss/v2.xml
 
 ### США
 - ✅ NPR — https://feeds.npr.org/1001/rss.xml
 - ⚠️ CNN — мёртвый RSS (отдаёт 2023 год), удалён из реестра
-- ⏳ WSJ — https://feeds.content.dowjones.io/public/rss/RSSUSnews
+- ✅ WSJ — https://feeds.content.dowjones.io/public/rss/RSSUSnews
 - ⏳ PBS NewsHour — https://www.pbs.org/newshour/feeds/rss/headlines
 - ⏳ Politico — https://rss.politico.com/politics-news.xml
 - ⏳ NYT — https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
 
 ### Китай
-- ⏳ Xinhua — проверить актуальный RSS
+- ✅ Xinhua English — <URL который у тебя>
+- ✅ Global Times — <URL который у тебя>
+- ⚠️ China Daily — RSS не работает (404), не используем
 
 ## Что делать, если источник не-RSS
 
