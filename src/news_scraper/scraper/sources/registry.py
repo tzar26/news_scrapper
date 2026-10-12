@@ -5,6 +5,7 @@ from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.rbk import RBKSource
 from news_scraper.scraper.sources.tass import TASSSource
 from news_scraper.scraper.sources.wsj import WSJSource
+from news_scraper.scraper.sources.xinhua import XinhuaSource
 
 ALL_SOURCES: list[type[Source]] = [
     KommersantSource,
@@ -12,6 +13,7 @@ ALL_SOURCES: list[type[Source]] = [
     RBKSource,
     TASSSource,
     WSJSource,
+    XinhuaSource,
 ]
 
 

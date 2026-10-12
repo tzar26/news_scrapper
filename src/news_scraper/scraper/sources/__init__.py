@@ -5,6 +5,7 @@ from news_scraper.scraper.sources.registry import ALL_SOURCES, get_sources_by_co
 from news_scraper.scraper.sources.rss import RSSSource
 from news_scraper.scraper.sources.tass import TASSSource
 from news_scraper.scraper.sources.wsj import WSJSource
+from news_scraper.scraper.sources.xinhua import XinhuaSource
 
 __all__ = [
     'RSSSource',
@@ -13,6 +14,7 @@ __all__ = [
     'RBKSource',
     'TASSSource',
     'WSJSource',
+    'XinhuaSource',
     'ALL_SOURCES',
     'get_sources_by_country',
     'Source',
