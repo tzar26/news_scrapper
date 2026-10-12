@@ -5,6 +5,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 
 from news_scraper.api.routes.articles import router as articles_router
+from news_scraper.api.routes.ask import router as ask_router
 from news_scraper.api.routes.stats import router as stats_router
 
 app = FastAPI(
@@ -15,6 +16,7 @@ app = FastAPI(
 
 app.include_router(articles_router)
 app.include_router(stats_router)
+app.include_router(ask_router)
 
 
 @app.get('/health', tags=['system'])
