@@ -1,13 +1,13 @@
 from news_scraper.domain.enums import Country
 from news_scraper.scraper.sources.base import Source
-from news_scraper.scraper.sources.cnn import CNNSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.npr import NPRSource
+from news_scraper.scraper.sources.rbk import RBKSource
 
 ALL_SOURCES: list[type[Source]] = [
     KommersantSource,
     NPRSource,
-    CNNSource,
+    RBKSource,
 ]
 
 
