@@ -80,6 +80,11 @@ def render_by_source(stats: dict) -> None:
 def render_by_category(stats: dict) -> None:
     """Bar chart по категориям."""
     st.subheader('По категориям')
+    st.caption(
+        'Категория берётся из RSS-фида. Большинство источников '
+        'её не передают — отсюда преобладание "other". '
+        'Автоматическая классификация через LLM запланирована.'
+    )
     data = {item['key']: item['count'] for item in stats['by_category']}
     st.bar_chart(data)
 
