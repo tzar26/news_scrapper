@@ -6,6 +6,7 @@ from news_scraper.scraper.sources.marketwatch import MarketWatchSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.nyt import NYTSource
 from news_scraper.scraper.sources.oilprice import OilPriceSource
+from news_scraper.scraper.sources.pbsnews import PBSNewsSource
 from news_scraper.scraper.sources.prime import PrimeSource
 from news_scraper.scraper.sources.rbk import RBKSource
 from news_scraper.scraper.sources.registry import ALL_SOURCES, get_sources_by_country
@@ -33,4 +34,5 @@ __all__ = [
     'Source',
     'CNBCSource',
     'RBKSource',
+    'PBSNewsSource',
 ]

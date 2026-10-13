@@ -8,6 +8,7 @@ from news_scraper.scraper.sources.marketwatch import MarketWatchSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.nyt import NYTSource
 from news_scraper.scraper.sources.oilprice import OilPriceSource
+from news_scraper.scraper.sources.pbsnews import PBSNewsSource
 from news_scraper.scraper.sources.prime import PrimeSource
 from news_scraper.scraper.sources.rbc import RBCSource
 from news_scraper.scraper.sources.rbk import RBKSource
@@ -30,6 +31,7 @@ ALL_SOURCES: list[type[Source]] = [
     MarketWatchSource,
     RBCSource,
     NYTSource,
+    PBSNewsSource,
 ]
 
 
@@ -40,8 +42,6 @@ def get_sources_by_country(country: Country) -> list[type[Source]]:
 
 # TODO: добавить источники
 # США:
-#   - PBS NewsHour (https://www.pbs.org/newshour/feeds/rss/headlines)
 #   - Politico (https://rss.politico.com/politics-news.xml)
-#   - NYT (https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml)
 # После добавления — не забыть экспортировать в __init__.py
 # и добавить класс в ALL_SOURCES.
