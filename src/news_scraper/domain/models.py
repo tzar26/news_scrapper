@@ -18,6 +18,10 @@ class RawNewsItem(BaseModel):
     source: str = Field(description='Source of the news item')
     country: Country = Field(description='Country of the news item')
     category: Category = Field(default=Category.OTHER, description='Category of the news item')
+    category_raw: str | None = Field(
+        default=None,
+        description='Сырое значение категории из RSS (для отладки маппинга)',
+    )
     published_at: datetime = Field(description='Publication date and time of the news item')
     text: str = Field(description='Text of the news item')
     summary: str | None = Field(default=None, description='Summary of the news item')

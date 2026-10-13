@@ -88,7 +88,12 @@ def parse_rss(
             # title как тело, чтобы эмбеддинг был осмысленным.
             text = title
 
-        category = _map_category(entry.get('category'), default_category)
+        category_raw_value = entry.get('category')
+        if isinstance(category_raw_value, str):
+            category_raw_value = category_raw_value.strip() or None
+        else:
+            category_raw_value = None
+        category = _map_category(category_raw_value, default_category)
 
         try:
             news_item = RawNewsItem(
@@ -99,6 +104,7 @@ def parse_rss(
                 url=url,
                 title=title,
                 text=text,
+                category_raw=category_raw_value,
             )
             news_items.append(news_item)
         except ValidationError as e:

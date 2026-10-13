@@ -32,6 +32,7 @@ class ArticleRepository:
                 'title': item.title,
                 'source': item.source,
                 'country': item.country.value,
+                'category_raw': item.category_raw,
                 'category': item.category.value,
                 'published_at': item.published_at,
                 'text': item.text,
