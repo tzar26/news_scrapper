@@ -8,6 +8,7 @@ from news_scraper.rag.retriever import search
 QUERIES = [
     'ключевая ставка ЦБ',
     'нефть добыча ОПЕК',
+    'золото',
     'автомобильный рынок Китая',
 ]
 
@@ -20,7 +21,7 @@ async def main() -> None:
             results = await search(session, query, top_k=5)
             for i, r in enumerate(results, 1):
                 extra = f' (+{len(r.related)} related)' if r.related else ''
-                print(f'{i}. [{r.distance:.3f}] {r.title[:70]}{extra}')
+                print(f'{i}. [{r.rrf_score:.3f}] {r.title[:70]}{extra}')
 
 
 if __name__ == '__main__':
