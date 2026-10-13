@@ -72,9 +72,22 @@ def parse_rss(
             continue
 
         published_at = datetime(*entry.published_parsed[:6], tzinfo=UTC)
-        url = entry.link
-        title = entry.title
-        text = entry.get('summary', '')
+        url = entry.get('link')
+        title = (entry.get('title') or '').strip()
+        text = (entry.get('summary') or '').strip()
+
+        if len(title) < 25:
+            # Слишком короткий заголовок — это мусор типа
+            # «Morning news brief». Отсеиваем до валидации.
+            skipped += 1
+            continue
+
+        if not text:
+            # Некоторые фиды (GlobalTimes, TASS) не дублируют
+            # новость в summary — весь смысл в title. Используем
+            # title как тело, чтобы эмбеддинг был осмысленным.
+            text = title
+
         category = _map_category(entry.get('category'), default_category)
 
         try:
