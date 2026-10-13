@@ -1,0 +1,109 @@
+from __future__ import annotations
+
+import os
+from datetime import datetime
+
+import httpx
+import streamlit as st
+
+API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000')
+
+
+@st.cache_data(ttl=60)
+def fetch_stats() -> dict:
+    """Забирает агрегированную статистику из FastAPI /stats."""
+    with httpx.Client(timeout=10.0) as client:
+        response = client.get(f'{API_BASE_URL}/stats')
+        response.raise_for_status()
+    return response.json()
+
+
+@st.cache_data(ttl=60)
+def fetch_health() -> dict:
+    """Проверяет доступность API через /health."""
+    with httpx.Client(timeout=5.0) as client:
+        response = client.get(f'{API_BASE_URL}/health')
+        response.raise_for_status()
+    return response.json()
+
+
+def format_date(iso_str: str) -> str:
+    """Форматирует ISO datetime в читаемый вид 'DD.MM.YYYY HH:MM'."""
+    return datetime.fromisoformat(iso_str.replace('Z', '+00:00')).strftime('%d.%m.%Y %H:%M')
+
+
+def render_sidebar() -> None:
+    """Сайдбар: статус API, ссылки, кнопка обновления."""
+    with st.sidebar:
+        st.header('News Scraper')
+        st.caption('Pet-проект: сбор и анализ новостей')
+        try:
+            health = fetch_health()
+            st.success(f'API: {health["status"]}')
+        except Exception as exc:
+            st.error(f'API недоступен: {exc}')
+        st.markdown('---')
+        st.markdown(f'[API docs]({API_BASE_URL}/docs)')
+        st.markdown('---')
+        if st.button('Обновить данные'):
+            st.cache_data.clear()
+            st.rerun()
+
+
+def render_overview(stats: dict) -> None:
+    """Обзор: metric cards + диапазон дат."""
+    st.subheader('Обзор')
+    col1, col2, col3 = st.columns(3)
+    col1.metric('Всего статей', stats['total_articles'])
+    col2.metric('Источников', len(stats['by_source']))
+    col3.metric('Стран', len(stats['by_country']))
+    earliest = stats.get('earliest_published_at')
+    latest = stats.get('latest_published_at')
+    if earliest and latest:
+        st.caption(f'Диапазон дат: {format_date(earliest)} — {format_date(latest)}')
+
+
+def render_by_country(stats: dict) -> None:
+    """Bar chart по странам."""
+    st.subheader('По странам')
+    data = {item['key']: item['count'] for item in stats['by_country']}
+    st.bar_chart(data)
+
+
+def render_by_source(stats: dict) -> None:
+    """Bar chart по источникам."""
+    st.subheader('По источникам')
+    data = {item['key']: item['count'] for item in stats['by_source']}
+    st.bar_chart(data)
+
+
+def render_by_category(stats: dict) -> None:
+    """Bar chart по категориям."""
+    st.subheader('По категориям')
+    data = {item['key']: item['count'] for item in stats['by_category']}
+    st.bar_chart(data)
+
+
+def main() -> None:
+    """Точка входа."""
+    st.set_page_config(page_title='News Scraper Dashboard', page_icon='📰', layout='wide')
+    st.title('📰 News Scraper Dashboard')
+    render_sidebar()
+    try:
+        stats = fetch_stats()
+    except Exception as exc:
+        st.error(f'Не удалось загрузить статистику: {exc}')
+        st.stop()
+    render_overview(stats)
+    st.markdown('---')
+    col1, col2 = st.columns(2)
+    with col1:
+        render_by_country(stats)
+    with col2:
+        render_by_source(stats)
+    st.markdown('---')
+    render_by_category(stats)
+
+
+if __name__ == '__main__':
+    main()
