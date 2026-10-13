@@ -4,6 +4,7 @@ from news_scraper.scraper.sources.cnbc import CNBCSource
 from news_scraper.scraper.sources.gtchina import GTChinaSource
 from news_scraper.scraper.sources.interfax import InterfaxSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
+from news_scraper.scraper.sources.marketwatch import MarketWatchSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.oilprice import OilPriceSource
 from news_scraper.scraper.sources.prime import PrimeSource
@@ -24,6 +25,7 @@ ALL_SOURCES: list[type[Source]] = [
     PrimeSource,
     OilPriceSource,
     CNBCSource,
+    MarketWatchSource,
 ]
 
 
