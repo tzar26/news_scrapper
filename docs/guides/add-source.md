@@ -53,22 +53,46 @@
 ## Проверенные источники по странам
 
 ### Россия
-- ✅ Kommersant — https://www.kommersant.ru/RSS/news.xml
-- ✅ RBK — https://rssexport.rbc.ru/rbcnews/news/30/full.rss
-- ✅ TASS — https://tass.ru/rss/v2.xml
+- ✅ Kommersant
+- ✅ TASS
+- ✅ RBC
+- ✅ Interfax
+- ✅ Prime
 
 ### США
-- ✅ NPR — https://feeds.npr.org/1001/rss.xml
-- ⚠️ CNN — мёртвый RSS (отдаёт 2023 год), удалён из реестра
-- ✅ WSJ — https://feeds.content.dowjones.io/public/rss/RSSUSnews
-- ⏳ PBS NewsHour — https://www.pbs.org/newshour/feeds/rss/headlines
-- ⏳ Politico — https://rss.politico.com/politics-news.xml
-- ⏳ NYT — https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml
+- ✅ NPR
+- ✅ WSJ
+- ✅ CNBC
+- ✅ MarketWatch
+- ✅ PBS NewsHour
+- ✅ NYT
+- ⚠️ CNN — мёртвый RSS, удалён
 
 ### Китай
-- ✅ Xinhua English — <URL который у тебя>
-- ✅ Global Times — <URL который у тебя>
+- ✅ Xinhua
+- ✅ Global Times
 - ⚠️ China Daily — RSS не работает (404), не используем
+
+### Мир (без страны)
+- ✅ OilPrice
+
+### Отложенные
+- ⏳ Politico — битая ссылка, проверить позже
+
+## Проблема: Xinhua timeout
+
+Первый прогон скрапера упал на Xinhua с `httpx.ReadTimeout`.
+Повторный — прошёл. Это **временный сетевой сбой**, не проблема кода.
+
+**Решения:**
+1. **Оставить как есть** — редкий кейс, `try/except` в `scrape_all_sources`
+   ловит и продолжает. Источник помечен как `failed`, повторится
+   на следующем прогоне beat'а.
+2. **Добавить retry в `RSSSource.fetch()`** — 3 попытки с backoff.
+   Правильно, но это работа на будущее.
+
+**Решение сейчас:** оставляем как есть. Если Xinhua будет падать
+часто — добавим retry.
 
 ## Что делать, если источник не-RSS
 
