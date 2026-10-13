@@ -8,6 +8,7 @@ from news_scraper.scraper.sources.marketwatch import MarketWatchSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.oilprice import OilPriceSource
 from news_scraper.scraper.sources.prime import PrimeSource
+from news_scraper.scraper.sources.rbc import RBCSource
 from news_scraper.scraper.sources.rbk import RBKSource
 from news_scraper.scraper.sources.tass import TASSSource
 from news_scraper.scraper.sources.wsj import WSJSource
@@ -26,6 +27,7 @@ ALL_SOURCES: list[type[Source]] = [
     OilPriceSource,
     CNBCSource,
     MarketWatchSource,
+    RBCSource,
 ]
 
 
@@ -35,8 +37,6 @@ def get_sources_by_country(country: Country) -> list[type[Source]]:
 
 
 # TODO: добавить источники
-# Россия:
-#   - RBC (https://rssexport.rbc.ru/rbcnews/news/30/full.rss)
 # США:
 #   - PBS NewsHour (https://www.pbs.org/newshour/feeds/rss/headlines)
 #   - Politico (https://rss.politico.com/politics-news.xml)

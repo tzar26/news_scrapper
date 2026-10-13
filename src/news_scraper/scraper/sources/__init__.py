@@ -30,4 +30,5 @@ __all__ = [
     'get_sources_by_country',
     'Source',
     'CNBCSource',
+    'RBKSource',
 ]
