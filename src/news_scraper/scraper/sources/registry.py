@@ -1,9 +1,11 @@
 from news_scraper.domain.enums import Country
 from news_scraper.scraper.sources.base import Source
+from news_scraper.scraper.sources.cnbc import CNBCSource
 from news_scraper.scraper.sources.gtchina import GTChinaSource
 from news_scraper.scraper.sources.interfax import InterfaxSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.npr import NPRSource
+from news_scraper.scraper.sources.oilprice import OilPriceSource
 from news_scraper.scraper.sources.prime import PrimeSource
 from news_scraper.scraper.sources.rbk import RBKSource
 from news_scraper.scraper.sources.tass import TASSSource
@@ -20,6 +22,8 @@ ALL_SOURCES: list[type[Source]] = [
     GTChinaSource,
     InterfaxSource,
     PrimeSource,
+    OilPriceSource,
+    CNBCSource,
 ]
 
 

@@ -1,7 +1,9 @@
+from news_scraper.scraper.sources.cnbc import CNBCSource
 from news_scraper.scraper.sources.gtchina import GTChinaSource
 from news_scraper.scraper.sources.interfax import InterfaxSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.npr import NPRSource
+from news_scraper.scraper.sources.oilprice import OilPriceSource
 from news_scraper.scraper.sources.prime import PrimeSource
 from news_scraper.scraper.sources.rbk import RBKSource
 from news_scraper.scraper.sources.registry import ALL_SOURCES, get_sources_by_country
@@ -21,7 +23,9 @@ __all__ = [
     'XinhuaSource',
     'GTChinaSource',
     'PrimeSource',
+    'OilPriceSource',
     'ALL_SOURCES',
     'get_sources_by_country',
     'Source',
+    'CNBCSource',
 ]
