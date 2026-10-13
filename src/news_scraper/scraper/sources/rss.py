@@ -24,7 +24,10 @@ class RSSSource:
         :param client: An optional httpx.AsyncClient instance. If None, a new client will be created.
         """
         if client is None:
-            self._client = httpx.AsyncClient(timeout=10.0)
+            self._client = httpx.AsyncClient(
+                timeout=10.0,
+                headers={'User-Agent': 'Mozilla/5.0 (compatible; news-scraper/0.1)'},
+            )
         else:
             self._client = client
         self._owns_client = client is None
