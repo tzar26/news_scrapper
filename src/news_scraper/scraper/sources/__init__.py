@@ -1,4 +1,5 @@
 from news_scraper.scraper.sources.gtchina import GTChinaSource
+from news_scraper.scraper.sources.interfax import InterfaxSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.rbk import RBKSource
@@ -10,6 +11,7 @@ from news_scraper.scraper.sources.xinhua import XinhuaSource
 
 __all__ = [
     'RSSSource',
+    'InterfaxSource',
     'KommersantSource',
     'NPRSource',
     'RBKSource',
