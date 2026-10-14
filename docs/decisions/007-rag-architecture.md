@@ -142,3 +142,28 @@ LangChain остаётся только в `agents/` для будущего Lan
 
 Вывод: LangChain не всегда оправдан. Для тонких обёрток над API
 прямой SDK быстрее и проще.
+
+## Производительность RAG — диагностика и фиксы (2026-10-14)
+
+Симптом: /ask отвечал 55–60 секунд.
+Диагностика (поэтапные замеры):
+- embed запроса: 7.3s (норма 0.9s)
+- search: 0.1s
+- LLM: 53s (норма 6–20s)
+
+Корневые причины:
+1. LangChain streaming aggregation — 9x оверхед без преимуществ.
+2. VRAM ping-pong моделей — Ollama выгружала qwen при embed и наоборот.
+
+Решения:
+1. Замена ChatOllama на ollama.AsyncClient (прямой SDK).
+2. OLLAMA_MAX_LOADED_MODELS=2 + OLLAMA_KEEP_ALIVE=-1 в override.conf.
+3. Fix regex цитирования: [article_(\d+)] → article_(\d+).
+
+Результат:
+- curl: 5.9–6.4s (10x ускорение).
+- Обе модели в VRAM одновременно (~12.7 ГБ из 16 ГБ).
+- LangChain остаётся для будущего LangGraph-агента.
+
+Вывод: для тонких обёрток над API прямой SDK быстрее.
+LangChain оправдан, когда нужны chains, tools, memory — не для chat.
