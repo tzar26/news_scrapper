@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import time
+
 import streamlit as st
 
 from news_scraper.dashboard._shared import ask_question, render_sidebar
@@ -56,17 +58,20 @@ def main() -> None:
         return
 
     with st.spinner('Ищу релевантные статьи и генерирую ответ... (~10 сек)'):
+        start = time.monotonic()
         try:
             result = ask_question(question, top_k=top_k)
         except Exception as exc:
             st.error(f'Ошибка: {exc}')
             return
+        elapsed = time.monotonic() - start
 
     st.markdown('### Ответ')
     st.markdown(result['answer'])
 
     st.markdown('---')
     render_sources(result.get('sources', []))
+    st.caption(f'⏱️ {elapsed:.2f}s')
 
 
 if __name__ == '__main__':

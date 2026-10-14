@@ -9,7 +9,7 @@ import streamlit as st
 API_BASE_URL = os.getenv('API_BASE_URL', 'http://localhost:8000')
 
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=30)
 def fetch_stats() -> dict:
     """Забирает агрегированную статистику из FastAPI /stats."""
     with httpx.Client(timeout=10.0) as client:
