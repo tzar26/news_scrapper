@@ -1,10 +1,16 @@
+"""RAG chain: retrieval + LLM через прямой ollama SDK.
+
+LangChain не используется — на нашем объёме его оверхед (streaming
+агрегация, обёртки) даёт 9x замедление без функциональных преимуществ.
+Для LangGraph-агента LangChain остаётся в agents/.
+"""
+
 from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
 
-from langchain_core.messages import HumanMessage, SystemMessage
-from langchain_ollama import ChatOllama
+import ollama
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from news_scraper.infra.ollama_client import OllamaClient
@@ -40,17 +46,8 @@ def _extract_sources(
 ) -> list[SourceRef]:
     """Извлекает уникальные источники, упомянутые в ответе.
 
-    Ищет паттерн ``[article_N]``, сопоставляет N с id из results
-    (включая related-перепечатки), возвращает в порядке появления
-    в тексте, без дублей.
-
-    Args:
-        answer_text: текст ответа LLM.
-        results: результаты retrieval, отданные в контекст.
-
-    Returns:
-        Список SourceRef в порядке первого упоминания в ответе.
-        Если id в тексте нет в results — пропускается (галлюцинация).
+    Ищет [article_N], сопоставляет с id из results (включая related),
+    возвращает в порядке появления в тексте, без дублей.
     """
     seen_ids = dict.fromkeys(int(match) for match in CITATION_PATTERN.findall(answer_text))
 
@@ -83,21 +80,24 @@ async def answer_question(
     client: OllamaClient | None = None,
 ) -> RAGAnswer:
     """Отвечает на вопрос, опираясь на статьи из БД.
-    Пайплайн: retrieval → промпт → ChatOllama → парсинг цитирований.
+
+    Пайплайн: retrieval (hybrid) → промпт → ollama.chat → парсинг цитат.
+
     Args:
-    session: сессия БД.
-    question: вопрос пользователя.
-    top_k: сколько уникальных историй подать в контекст.
-    model: имя модели в Ollama.
-    client: OllamaClient; если None — создаётся и закрывается внутри.
+        session: сессия БД.
+        question: вопрос пользователя.
+        top_k: сколько уникальных историй подать в контекст.
+        model: имя модели в Ollama.
+        client: OllamaClient для embed; если None — создаётся внутри.
+
     Returns:
-    RAGAnswer с ответом, источниками и сырыми results.
-    Если ничего не найдено — answer='В базе нет информации
-    по этому запросу.', sources=[].
+        RAGAnswer. Если retrieval пустой — answer с сообщением,
+        sources=[].
     """
     owns_client = client is None
     if client is None:
         client = OllamaClient()
+
     try:
         results = await search(session, question, top_k=top_k, client=client)
         if not results:
@@ -106,22 +106,31 @@ async def answer_question(
                 sources=[],
                 results=[],
             )
+
         context = format_context(results)
-        user_prompt = USER_PROMPT_TEMPLATE.format(question=question, context=context)
-        llm = ChatOllama(
-            model=model,
-            temperature=0.1,
-            num_ctx=16384,
-            base_url=settings.ollama_base_url,
+        user_prompt = USER_PROMPT_TEMPLATE.format(
+            question=question,
+            context=context,
         )
-        messages = [
-            SystemMessage(content=SYSTEM_PROMPT),
-            HumanMessage(content=user_prompt),
-        ]
-        response = await llm.ainvoke(messages)
-        answer_text = response.content  # type: ignore[union-attr]
+
+        ollama_client = ollama.AsyncClient(host=settings.ollama_base_url)
+        response = await ollama_client.chat(
+            model=model,
+            messages=[
+                {'role': 'system', 'content': SYSTEM_PROMPT},
+                {'role': 'user', 'content': user_prompt},
+            ],
+            options={
+                'num_ctx': 4096,
+                'temperature': 0.3,
+            },
+            stream=False,
+        )
+
+        answer_text = response['message']['content']
         sources = _extract_sources(answer_text, results)
         return RAGAnswer(answer=answer_text, sources=sources, results=results)
+
     finally:
         if owns_client:
             await client.aclose()

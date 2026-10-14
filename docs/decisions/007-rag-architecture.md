@@ -110,3 +110,35 @@ CREATE TABLE article_embeddings (
 **Вывод:** модель оправдала выбор, retrieval работает.
 Дальнейшие улучшения (hybrid search, reranking) — по мере
 необходимости, при появлении сигнала плохого recall.
+
+## Производительность RAG — диагностика и фиксы (2026-10-14)
+
+Симптом: `/ask` отвечает 55–60 секунд на запрос.
+Диагностика (замеры по этапам через scripts/debug_timing.py):
+- embed запроса: 7.3s (норма 0.9s)
+- search: 0.1s
+- LLM: 53s (норма 6–20s)
+
+Корневые причины:
+1. **LangChain streaming aggregation.** ChatOllama использует streaming
+с агрегацией чанков. Через WSL→Ubuntu сеть это даёт ~9x оверхед
+без функциональных преимуществ для нашего сценария.
+2. **VRAM ping-pong моделей.** Ollama по умолчанию держит одну модель.
+При вызове `embed` (bge-m3) qwen выгружался, при `chat` — наоборот.
+Каждое переключение ~25–30 сек.
+
+Решения:
+1. Заменили `ChatOllama` на `ollama.AsyncClient` (прямой SDK).
+LangChain остаётся только в `agents/` для будущего LangGraph.
+2. `OLLAMA_MAX_LOADED_MODELS=2` + `OLLAMA_KEEP_ALIVE=-1` в
+`/etc/systemd/system/ollama.service.d/override.conf`.
+3. Fix regex: `\[article_(\d+)\]` → `article_(\d+)` — модель иногда
+пишет `[article_1, article_2]` в одних скобках.
+
+Результат:
+- Первый прогон после прогрева: 15–20 сек.
+- Последующие: 5–10 сек (10x ускорение).
+- Обе модели живут в VRAM одновременно (~12.7 ГБ из 16 ГБ).
+
+Вывод: LangChain не всегда оправдан. Для тонких обёрток над API
+прямой SDK быстрее и проще.
