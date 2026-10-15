@@ -28,21 +28,28 @@ CANDIDATES_PATH = Path('tests/rag/candidates.yaml')
 TOP_N = 20
 
 
-def load_previous_labels() -> dict[str, dict[int, bool]]:
+def load_previous_labels() -> dict[str, dict[int, dict]]:
     """Загружает старую разметку из candidates.yaml.
 
     Returns:
-        Dict: query -> {id: relevant}. Пустой, если файла нет.
+        Dict: query -> {id: {'relevant': bool, 'title': str, 'source': str}}.
+        Пустой, если файла нет.
     """
     if not CANDIDATES_PATH.exists():
         return {}
     with CANDIDATES_PATH.open() as f:
         data = yaml.safe_load(f)
-    labels: dict[str, dict[int, bool]] = {}
+    labels: dict[str, dict[int, dict]] = {}
     for q in data.get('queries', []):
         query = q['query']
         labels[query] = {
-            c['id']: c['relevant'] for c in q.get('candidates', []) if c.get('relevant') is not None
+            c['id']: {
+                'relevant': c['relevant'],
+                'title': c.get('title', ''),
+                'source': c.get('source', ''),
+            }
+            for c in q.get('candidates', [])
+            if c.get('relevant') is not None
         }
     return labels
 
@@ -70,19 +77,19 @@ async def dump_one(
                 'source': r.representative_url.split('/')[2] if r.representative_url else '',
                 'title': r.title,
                 'rrf_score': round(r.rrf_score, 5),
-                'relevant': previous.get(rid),  # перенос метки или None
+                'relevant': previous.get(rid, {}).get('relevant'),  # перенос метки или None
             }
         )
 
     # Релевантные из прошлого прогона, которых нет в новом top-N
     dropped: list[dict] = []
-    for old_id, old_label in previous.items():
-        if old_label is True and old_id not in new_ids:
+    for old_id, old_meta in previous.items():
+        if old_meta['relevant'] is True and old_id not in new_ids:
             dropped.append(
                 {
                     'id': old_id,
-                    'source': 'previous_annotation',
-                    'title': '[Выпала из top-N, но размечена релевантной ранее]',
+                    'source': old_meta['source'] or 'previous_annotation',
+                    'title': old_meta['title'],
                     'rrf_score': None,
                     'relevant': True,
                 }
