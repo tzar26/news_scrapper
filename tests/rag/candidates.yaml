@@ -216,12 +216,12 @@ queries:
     relevant: true
   - id: 5687
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Brent подешевела до $104,87 за баррель'
     rrf_score: null
     relevant: true
   - id: 5683
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'ОПЕК вновь сохранила оценки роста поставок ЖУВ из стран не-ОПЕК+ в 2026 году'
     rrf_score: null
     relevant: true
 - query: автопром Китая
@@ -549,7 +549,7 @@ queries:
     relevant: true
   - id: 5305
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Танкерный фрахт для РФ растет четвертый месяц подряд'
     rrf_score: null
     relevant: true
 - query: рынок акций США
@@ -664,32 +664,32 @@ queries:
     relevant: false
   - id: 5816
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Bank earnings live updates: JPMorgan, Wells Fargo, Goldman and Citigroup are all out. Here are the results'
     rrf_score: null
     relevant: true
   - id: 5848
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Six Flags’ stock slumps near 52-week lows after fatal accident'
     rrf_score: null
     relevant: true
   - id: 5459
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Getty Images решила объявить о банкротстве'
     rrf_score: null
     relevant: true
   - id: 5445
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Reuters сообщило об историческом буме инвестиций в ИИ в США'
     rrf_score: null
     relevant: true
   - id: 5846
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Why the world’s No. 1 fund manager has just changed its mind on bonds for the first time in six years'
     rrf_score: null
     relevant: true
   - id: 5796
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Bloomberg: мир снова на пороге кризиса 2008 года из-за ИИ'
     rrf_score: null
     relevant: true
 - query: экспорт российского газа
@@ -803,12 +803,12 @@ queries:
     relevant: false
   - id: 5252
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Словакия запросит у ЕК переходный период для поставок газа из России'
     rrf_score: null
     relevant: true
   - id: 5797
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'ЕС скоро будет умолять Россию вернуть газ, пишут СМИ'
     rrf_score: null
     relevant: true
 - query: экономика Китая
@@ -1034,12 +1034,12 @@ queries:
     relevant: true
   - id: 5207
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'ЕС включил в санкционный список автопроизводителя «ГАЗ»'
     rrf_score: null
     relevant: true
   - id: 5453
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Посольство России обвинило Францию в «разбое и пиратстве»'
     rrf_score: null
     relevant: true
 - query: ФРС ставка
@@ -1263,17 +1263,17 @@ queries:
     relevant: false
   - id: 5551
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Минфин сконцентрировал ресурсы бюджета на 2027-2029 годы на главных приоритетах'
     rrf_score: null
     relevant: true
   - id: 5492
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Силуанов: валютная выручка от экспорта дизеля поддержит платежный баланс РФ'
     rrf_score: null
     relevant: true
   - id: 5709
     source: previous_annotation
-    title: '[Выпала из top-N, но размечена релевантной ранее]'
+    title: 'Социально ориентированные бюджеты не стыдно поддерживать, заявил Володин'
     rrf_score: null
     relevant: true
 - query: доходность облигаций
