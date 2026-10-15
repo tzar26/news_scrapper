@@ -1,0 +1,34 @@
+# Test set для RAG retrieval-метрик.
+#
+# Каждый запрос имеет:
+#   - query: текст запроса на естественном языке
+#   - expected_ids: список ID статей, размеченных как релевантные
+#     (заполняется вручную после прогона scripts/dump_candidates.py)
+#
+# Разметка "релевантности" — бинарная: подходит ли статья под запрос.
+
+queries:
+  - query: "ключевая ставка ЦБ"
+    expected_ids: []
+  - query: "нефть ОПЕК"
+    expected_ids: []
+  - query: "автопром Китая"
+    expected_ids: []
+  - query: "цена золота"
+    expected_ids: []
+  - query: "инфляция в России"
+    expected_ids: []
+  - query: "рынок акций США"
+    expected_ids: []
+  - query: "экспорт российского газа"
+    expected_ids: []
+  - query: "экономика Китая"
+    expected_ids: []
+  - query: "санкции против России"
+    expected_ids: []
+  - query: "ФРС ставка"
+    expected_ids: []
+  - query: "бюджет России"
+    expected_ids: []
+  - query: "доходность облигаций"
+    expected_ids: []
