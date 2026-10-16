@@ -28,6 +28,7 @@ dependencies = [
     "langgraph>=0.2",
     # dashboard
     "streamlit>=1.40",
+    "FlashRank==0.2.10",
 ]
 
 [project.optional-dependencies]

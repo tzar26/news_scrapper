@@ -1,0 +1,9 @@
+mrr@1 0.8333
+mrr@3 0.8750
+mrr@5 0.8958
+precision@1 0.8333
+precision@3 0.8333
+precision@5 0.7333
+recall@1 0.1299
+recall@3 0.3468
+recall@5 0.5286

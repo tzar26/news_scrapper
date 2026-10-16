@@ -226,3 +226,49 @@ async def search(
     finally:
         if owns_client:
             await client.aclose()
+
+
+async def search_with_rerank(
+    session: AsyncSession,
+    query: str,
+    *,
+    top_k: int = 5,
+    candidates: int = 30,
+    country: Country | None = None,
+    category: Category | None = None,
+    client: OllamaClient | None = None,
+    reranker: any | None = None,
+) -> list[SearchResult]:
+    """Hybrid search + cross-encoder reranking.
+
+    Схема: hybrid search (vector + BM25 + RRF) → top-N кандидатов →
+    cross-encoder rerank → top_k.
+
+    Args:
+        session: сессия БД.
+        query: текстовый запрос.
+        top_k: сколько результатов вернуть после reranking.
+        candidates: сколько кандидатов взять из hybrid search.
+        country: фильтр по стране.
+        category: фильтр по категории.
+        client: OllamaClient; если None — создаётся внутри.
+        reranker: Reranker; если None — создаётся дефолтный.
+
+    Returns:
+        Список SearchResult, отсортированный по reranking-оценке.
+    """
+    results = await search(
+        session,
+        query,
+        top_k=candidates,
+        country=country,
+        category=category,
+        client=client,
+    )
+    if not results:
+        return []
+    if reranker is None:
+        from news_scraper.rag.reranker import Reranker
+
+        reranker = Reranker()
+    return reranker.rerank(query, results, top_k=top_k)

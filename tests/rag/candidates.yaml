@@ -21,7 +21,7 @@ queries:
     source: www.kommersant.ru
     title: Гендиректор «АльфаСтрахования» Владимир Скворцов о трансформации страхового
       рынка
-    rrf_score: 0.03083
+    rrf_score: 0.03041
     relevant: false
   - id: 6948
     source: www.kommersant.ru
@@ -34,79 +34,79 @@ queries:
     title: 'ЦБ: замедление инфляции в России прервалось из-за атак БПЛА'
     rrf_score: 0.01538
     relevant: false
+  - id: 8013
+    source: www.kommersant.ru
+    title: 'Reuters: Лагард может покинуть ЕЦБ в ноябре'
+    rrf_score: 0.01515
+    relevant: false
+  - id: 8843
+    source: www.marketwatch.com
+    title: Here are the key things Fed Chairman Kevin Warsh said — and didn’t say
+      — while Americans were sleeping Thursday night
+    rrf_score: 0.01493
+    relevant: false
   - id: 5739
     source: 1prime.ru
     title: Ставка RUONIA снизилась до 13,84%
-    rrf_score: 0.01515
+    rrf_score: 0.01471
     relevant: false
   - id: 7718
     source: 1prime.ru
     title: Центробанк купил юаней на внутреннем рынке на 12,1 миллиардов рублей
-    rrf_score: 0.01493
+    rrf_score: 0.01449
     relevant: false
   - id: 6893
     source: www.kommersant.ru
     title: ЦБ запретил перевод криптовалюты на собственный «холодный» кошелек // ЦБ
       запретил физлицам перевод криптовалюты на собственный некастодиальный кошелек
-    rrf_score: 0.01449
+    rrf_score: 0.01408
+    relevant: false
+  - id: 8806
+    source: www.cnbc.com
+    title: Fed's Warsh withholds rate signal, praises recent global tightening
+    rrf_score: 0.01389
+    relevant: false
+  - id: 7891
+    source: www.kommersant.ru
+    title: Банк России уличил главу УК «Кинетик Капитал» в манипулировании акциями
+      и ОФЗ
+    rrf_score: 0.0137
     relevant: false
   - id: 7406
     source: tass.ru
     title: 'ЦБ: в ДФО в сентябре снизился спрос населения на кредиты'
-    rrf_score: 0.01429
+    rrf_score: 0.01351
+    relevant: false
+  - id: 8717
+    source: 1prime.ru
+    title: Ставка RUONIA 15 октября осталась на уровне 13,91%
+    rrf_score: 0.01333
     relevant: false
   - id: 5199
     source: www.kommersant.ru
     title: 'Силуанов: бюджет на 2027-2029 годы выдержит любые колебания на мировых
       рынках'
-    rrf_score: 0.01408
+    rrf_score: 0.01316
+    relevant: false
+  - id: 8018
+    source: www.kommersant.ru
+    title: Путин попросил ЦБ и правительство проработать экосистему длинных денег
+    rrf_score: 0.01299
     relevant: false
   - id: 5842
     source: www.cnbc.com
     title: IMF warns bond yields could see a 'disorderly' spike as debt, inflation
       risks worsen
-    rrf_score: 0.01389
+    rrf_score: 0.01282
     relevant: false
   - id: 7235
     source: www.kommersant.ru
     title: Силуанов спрогнозировал пополнение ФНБ на 1 трлн рублей в 2026 году
-    rrf_score: 0.0137
-    relevant: false
-  - id: 7526
-    source: www.wsj.com
-    title: Opinion | Inflation Keeps Biting Real Wages
-    rrf_score: 0.01351
-    relevant: false
-  - id: 7173
-    source: www.kommersant.ru
-    title: МВФ повысил прогноз роста мировой экономики на 2026 год до 3,1%
-    rrf_score: 0.01333
-    relevant: false
-  - id: 6886
-    source: www.kommersant.ru
-    title: 'В ЦБ оценили спрос на поездки в Сибирь в период активности медведей //
-      ЦБ: активность медведей сдерживает туризм в Сибири'
-    rrf_score: 0.01316
-    relevant: false
-  - id: 6949
-    source: www.kommersant.ru
-    title: Бизнес не согласен с налоговыми предложениями правительства
-    rrf_score: 0.01299
-    relevant: false
-  - id: 5678
-    source: www.interfax.ru
-    title: Китай сократит размер налоговой льготы для экспортеров электромобилей
-    rrf_score: 0.01282
-    relevant: false
-  - id: 6963
-    source: www.kommersant.ru
-    title: Страховщики обсуждают с ЦБ расширение тарифного коридора по ОСАГО еще на
-      20–25%
     rrf_score: 0.01266
     relevant: false
-  - id: 7743
-    source: oilprice.com
-    title: Oil Market Tightens as Tanker Attacks and Inventory Draws Mount
+  - id: 8888
+    source: www.nytimes.com
+    title: Warsh Vows to Tame Inflation as A.I. Delivers ‘Shock’ to Economy
     rrf_score: 0.0125
     relevant: false
 - query: нефть ОПЕК
@@ -209,19 +209,25 @@ queries:
     title: Brent превысила $106 за баррель впервые с конца сентября
     rrf_score: 0.01266
     relevant: true
+  - id: 8797
+    source: oilprice.com
+    title: Oil Prices Head for Weekly Gain as Hormuz Attacks Rattle Markets
+    rrf_score: 0.0125
+    relevant: true
   - id: 5807
     source: oilprice.com
     title: Oil Prices Retreat as Saudi Arabia Pledges to Keep Exports Flowing
-    rrf_score: 0.0125
+    rrf_score: null
     relevant: true
   - id: 5687
     source: previous_annotation
-    title: 'Brent подешевела до $104,87 за баррель'
+    title: Brent подешевела до $104,87 за баррель
     rrf_score: null
     relevant: true
   - id: 5683
     source: previous_annotation
-    title: 'ОПЕК вновь сохранила оценки роста поставок ЖУВ из стран не-ОПЕК+ в 2026 году'
+    title: ОПЕК вновь сохранила оценки роста поставок ЖУВ из стран не-ОПЕК+ в 2026
+      году
     rrf_score: null
     relevant: true
 - query: автопром Китая
@@ -258,76 +264,76 @@ queries:
       train service between Beijing and Urumqi
     rrf_score: 0.01515
     relevant: false
+  - id: 8792
+    source: oilprice.com
+    title: China’s Sufficient Gas Stocks Could Ease Winter Supply Concerns
+    rrf_score: 0.01493
+    relevant: false
   - id: 7091
     source: www.kommersant.ru
     title: Экспорт китайских товаров достиг максимума за семь месяцев // Китайский
       экспорт вырос на максимальные за семь месяцев 36,3%
-    rrf_score: 0.01493
+    rrf_score: 0.01471
+    relevant: false
+  - id: 7977
+    source: www.kommersant.ru
+    title: Экспорт Китая вырос на максимальные за семь месяцев 36,3%
+    rrf_score: 0.01449
     relevant: false
   - id: 5768
     source: 1prime.ru
     title: 'Bloomberg: Китай замедлит использование нефти из запасов'
-    rrf_score: 0.01471
+    rrf_score: 0.01429
     relevant: false
   - id: 5009
     source: www.kommersant.ru
     title: Visa создаст в Китае подразделение для проведения платежей по картам
-    rrf_score: 0.01449
+    rrf_score: 0.01408
     relevant: false
   - id: 7740
     source: oilprice.com
     title: Lithium Prices Plunge as EU-China Trade Deal Sparks Demand Fears
-    rrf_score: 0.01429
+    rrf_score: 0.01389
+    relevant: false
+  - id: 8671
+    source: www.interfax.ru
+    title: Китай готовится ввести новые ограничения на экспорт ИИ-технологий
+    rrf_score: 0.0137
     relevant: false
   - id: 5302
     source: www.kommersant.ru
     title: Ужесточение торговой политики ЕС скажется на экономике КНР незначительно
-    rrf_score: 0.01408
+    rrf_score: 0.01351
     relevant: false
   - id: 7720
     source: 1prime.ru
     title: '"АвтоВАЗ" начал производство обновленной версии внедорожника Niva Bronto'
-    rrf_score: 0.01389
+    rrf_score: 0.01333
+    relevant: false
+  - id: 8732
+    source: 1prime.ru
+    title: Китай планирует опубликовать доклад о новых технологиях хранения энергии
+    rrf_score: 0.01316
     relevant: false
   - id: 7650
     source: 1prime.ru
     title: 'Володин: соглашение с Китаем позволит развивать отношения'
-    rrf_score: 0.0137
+    rrf_score: 0.01299
     relevant: false
   - id: 5635
     source: www.globaltimes.cn
     title: 'China schedules next moonshot this year: developer'
-    rrf_score: 0.01351
+    rrf_score: 0.01282
     relevant: false
   - id: 5653
     source: www.globaltimes.cn
     title: China's first Type 054B frigate reaches operational capability, official
       media reveals amid warship's first commissioning anniversary
-    rrf_score: 0.01333
+    rrf_score: 0.01266
     relevant: false
   - id: 7711
     source: 1prime.ru
     title: В Китае заявили о начале перехода к коммерциализации водородной энергетики
-    rrf_score: 0.01316
-    relevant: false
-  - id: 5774
-    source: 1prime.ru
-    title: Продажи BMW в III квартале снизились на 6,3%
-    rrf_score: 0.01299
-    relevant: false
-  - id: 6918
-    source: www.kommersant.ru
-    title: Китай вывел на орбиту группу спутников наблюдения за поверхностью Земли
-    rrf_score: 0.01282
-    relevant: false
-  - id: 7660
-    source: 1prime.ru
-    title: Госдума ратифицировала соглашение с Китаем о строительстве нового ж/д пути
-    rrf_score: 0.01266
-    relevant: false
-  - id: 5639
-    source: www.globaltimes.cn
-    title: 'China''s 2026 defense budget set at 1.94 trillion yuan: spokesperson'
     rrf_score: 0.0125
     relevant: false
 - query: цена золота
@@ -363,80 +369,77 @@ queries:
     title: Oil Market Tightens as Tanker Attacks and Inventory Draws Mount
     rrf_score: 0.01515
     relevant: false
+  - id: 8799
+    source: oilprice.com
+    title: 'Standard Chartered: Trump''s Russian Diesel Won''t Add New Supply'
+    rrf_score: 0.01493
+    relevant: false
   - id: 7741
     source: oilprice.com
     title: Oil Prices Fall as Trump Considers Easing Sanctions on Shadow Fleet Tankers
-    rrf_score: 0.01493
+    rrf_score: 0.01471
     relevant: false
   - id: 5044
     source: www.kommersant.ru
     title: В Финляндии снизили цену продажи архипелага Юуслуото, где принимали Брежнева
-    rrf_score: 0.01471
+    rrf_score: 0.01449
     relevant: false
   - id: 5845
     source: www.cnbc.com
     title: Oil prices fall as traders assess Russian diesel supply prospects and Saudi-Houthi
       conflict
-    rrf_score: 0.01449
+    rrf_score: 0.01429
     relevant: false
   - id: 5213
     source: www.kommersant.ru
     title: Brent превысила $106 за баррель впервые с конца сентября
-    rrf_score: 0.01429
+    rrf_score: 0.01408
+    relevant: false
+  - id: 8728
+    source: 1prime.ru
+    title: 'СМИ: цены на сталь в США выросли до максимума за четыре года'
+    rrf_score: 0.01389
     relevant: false
   - id: 7202
     source: www.kommersant.ru
     title: Европейские цены на газ выросли до максимума с начала войны в Заливе
-    rrf_score: 0.01408
+    rrf_score: 0.0137
     relevant: false
   - id: 6889
     source: www.kommersant.ru
     title: Акции «Совкомфлота» выросли на 5,4% на новостях о возможном ослаблении
       санкций для «теневого флота» // Акции «Совкомфлота» выросли до 88,99 рублей
       после сообщения Reuters о санкциях
-    rrf_score: 0.01389
+    rrf_score: 0.01351
+    relevant: false
+  - id: 8797
+    source: oilprice.com
+    title: Oil Prices Head for Weekly Gain as Hormuz Attacks Rattle Markets
+    rrf_score: 0.01333
+    relevant: false
+  - id: 8677
+    source: www.interfax.ru
+    title: Brent подорожала до $106,72 за баррель
+    rrf_score: 0.01316
     relevant: false
   - id: 5112
     source: www.kommersant.ru
     title: Экспортеры стальных полуфабрикатов повысили цены на турецком рынке на $15
-    rrf_score: 0.0137
+    rrf_score: 0.01299
     relevant: false
   - id: 7751
     source: oilprice.com
     title: 5 Challenges Facing South America’s Copper Boom
-    rrf_score: 0.01351
+    rrf_score: 0.01282
     relevant: false
   - id: 5687
     source: www.interfax.ru
     title: Brent подешевела до $104,87 за баррель
-    rrf_score: 0.01333
+    rrf_score: 0.01266
     relevant: false
   - id: 5143
     source: www.kommersant.ru
     title: Майка Майкла Джордана продана за рекордные $14 млн
-    rrf_score: 0.01316
-    relevant: false
-  - id: 6906
-    source: www.kommersant.ru
-    title: 'МВФ: цены на рис выросли на 50% с начала войны на Ближнем Востоке'
-    rrf_score: 0.01299
-    relevant: false
-  - id: 5150
-    source: www.kommersant.ru
-    title: Договоренности президентов РФ и США о дизеле привели к резкому укреплению
-      рубля
-    rrf_score: 0.01282
-    relevant: false
-  - id: 7852
-    source: www.pbs.org
-    title: The Social Security COLA for 2027 is set. Here's what experts say you need
-      to know
-    rrf_score: 0.01266
-    relevant: false
-  - id: 7489
-    source: tass.ru
-    title: Минэнерго рассчитывает на сохранение экспорта угля в 2027 году на уровне
-      2026 года
     rrf_score: 0.0125
     relevant: false
 - query: инфляция в России
@@ -457,234 +460,270 @@ queries:
     title: 'ЦБ: замедление инфляции в России прервалось из-за атак БПЛА'
     rrf_score: 0.032
     relevant: true
+  - id: 7876
+    source: www.kommersant.ru
+    title: Страховые пенсии проиндексируют темпами выше инфляции в 2027 году
+    rrf_score: 0.03055
+    relevant: false
   - id: 7779
     source: www.cnbc.com
     title: Here's the inflation breakdown for September 2026 — in one chart
     rrf_score: 0.01562
     relevant: false
+  - id: 8741
+    source: 1prime.ru
+    title: Соцвыплаты в Москве проиндексируют на 4,3%, заявил Собянин
+    rrf_score: 0.01538
+    relevant: false
   - id: 7847
     source: www.pbs.org
     title: Economist breaks down new inflation report and what's driving prices higher
-    rrf_score: 0.01538
+    rrf_score: 0.01515
     relevant: false
   - id: 7526
     source: www.wsj.com
     title: Opinion | Inflation Keeps Biting Real Wages
-    rrf_score: 0.01515
+    rrf_score: 0.01471
     relevant: false
   - id: 5701
     source: 1prime.ru
     title: Рост цен на АЗС крупных компаний не превышает инфляцию, заявили в кабмине
-    rrf_score: 0.01493
+    rrf_score: 0.01449
     relevant: true
   - id: 5028
     source: www.kommersant.ru
     title: 'АКОРТ назвал самые подешевевшие продукты в сентябре // АКОРТ: сливочное
       масло в российских магазинах подешевело на 24% за год'
-    rrf_score: 0.01471
+    rrf_score: 0.01429
     relevant: true
   - id: 7737
     source: 1prime.ru
     title: Биткоин справляется, инфляция в США меняет сценарии
-    rrf_score: 0.01449
+    rrf_score: 0.01408
     relevant: false
   - id: 7004
     source: www.kommersant.ru
     title: Володин поручил оценить рост тарифов ЖКХ в регионах
-    rrf_score: 0.01429
+    rrf_score: 0.01389
+    relevant: false
+  - id: 8425
+    source: www.rbc.ru
+    title: Какие социальные выплаты для россиян предусмотрены в 2027 году
+    rrf_score: 0.0137
     relevant: false
   - id: 7371
     source: www.npr.org
     title: Inflation sizzled in September — and Social Security benefits will get
       a boost
-    rrf_score: 0.01408
+    rrf_score: 0.01351
     relevant: false
   - id: 5778
     source: 1prime.ru
     title: Выдачи семейной ипотеки в России могут упасть на треть
-    rrf_score: 0.01389
+    rrf_score: 0.01333
     relevant: false
   - id: 5114
     source: www.kommersant.ru
     title: Внешнеторговый оборот России за восемь месяцев увеличился на 13,8%
-    rrf_score: 0.0137
+    rrf_score: 0.01316
     relevant: false
   - id: 6958
     source: www.kommersant.ru
     title: ФАС предложила повысить тарифы «Транснефти» на прокачку нефти на 5%
-    rrf_score: 0.01351
+    rrf_score: 0.01299
     relevant: false
   - id: 5132
     source: www.kommersant.ru
     title: Индекс Мосбиржи вырос на 3%
-    rrf_score: 0.01333
+    rrf_score: 0.01282
+    relevant: false
+  - id: 8044
+    source: www.kommersant.ru
+    title: Мосбиржа с 1 октября начала расчет индексов обмена наличной валюты
+    rrf_score: 0.01266
     relevant: false
   - id: 5199
     source: www.kommersant.ru
     title: 'Силуанов: бюджет на 2027-2029 годы выдержит любые колебания на мировых
       рынках'
-    rrf_score: 0.01316
-    relevant: false
-  - id: 5282
-    source: www.kommersant.ru
-    title: Российский рынок больших данных вырос за 2025 год на 20%
-    rrf_score: 0.01299
-    relevant: false
-  - id: 5075
-    source: www.kommersant.ru
-    title: Эксперты агентства АКРА проанализировали влияние санкций на российский
-      агропром
-    rrf_score: 0.01282
+    rrf_score: 0.0125
     relevant: false
   - id: 5476
     source: tass.ru
     title: Рост цен на АЗС вертикально интегрированных нефтяных компаний не превышает
       инфляцию
-    rrf_score: 0.01266
+    rrf_score: null
     relevant: true
   - id: 5686
     source: www.interfax.ru
     title: Эксперты отметили начало стабилизации цен на зерно в РФ
-    rrf_score: 0.0125
+    rrf_score: null
     relevant: true
   - id: 5305
     source: previous_annotation
-    title: 'Танкерный фрахт для РФ растет четвертый месяц подряд'
+    title: Танкерный фрахт для РФ растет четвертый месяц подряд
     rrf_score: null
     relevant: true
 - query: рынок акций США
   candidates:
+  - id: 7887
+    source: www.kommersant.ru
+    title: Американские университеты рекордно заработали на инвестициях в фондовый
+      рынок
+    rrf_score: 0.01639
+    relevant: false
   - id: 5824
     source: www.cnbc.com
     title: The stock market is at a critical juncture. Wall Street is convinced it
       will resolve in the bulls' favor
-    rrf_score: 0.01639
+    rrf_score: 0.01613
     relevant: true
   - id: 7757
     source: www.cnbc.com
     title: These stocks offer some of the best risk-adjusted upside on Wall Street
-    rrf_score: 0.01613
+    rrf_score: 0.01587
     relevant: true
   - id: 5852
     source: www.marketwatch.com
     title: Options traders expect wild stock-market swings beginning later this month.
       Here are 4 things to watch.
-    rrf_score: 0.01587
+    rrf_score: 0.01562
+    relevant: true
+  - id: 8808
+    source: www.cnbc.com
+    title: 'Here are Friday''s biggest analyst calls: Nvidia, SpaceX, Tesla, Apple,
+      Mobileye, EchoStar, Toll Brothers & more'
+    rrf_score: 0.01538
     relevant: true
   - id: 5820
     source: www.cnbc.com
     title: 'Here are Tuesday''s biggest analyst calls: Nvidia, Apple, Netflix, Meta,
       Galaxy, SoFi, Viking, AT&T & more'
-    rrf_score: 0.01562
+    rrf_score: 0.01515
+    relevant: true
+  - id: 8838
+    source: www.marketwatch.com
+    title: Nearly 40% of the S&P 500 is in a bear market. Here are 10 of those stocks
+      that analysts say can gain up to 81%.
+    rrf_score: 0.01493
     relevant: true
   - id: 5828
     source: www.cnbc.com
     title: 'Stocks making the biggest moves premarket: JPMorgan Chase, Micron, UnitedHealth
       & more'
-    rrf_score: 0.01538
+    rrf_score: 0.01471
     relevant: true
   - id: 5822
     source: www.cnbc.com
     title: Micron, SoftBank and ASML slide as Wall Street chip rout spreads
-    rrf_score: 0.01515
+    rrf_score: 0.01449
+    relevant: true
+  - id: 8807
+    source: www.cnbc.com
+    title: 'Stocks making the biggest moves premarket: Tesla, SpaceX, Alcoa, CoreWeave,
+      Travelers & more'
+    rrf_score: 0.01429
     relevant: true
   - id: 6887
     source: www.kommersant.ru
     title: 'FT: квартальная выручка Anthropic выросла на 50% и достигла $16,8 млрд'
-    rrf_score: 0.01493
+    rrf_score: 0.01408
     relevant: false
+  - id: 8840
+    source: www.marketwatch.com
+    title: Jefferies technical analyst finds an encouraging development in Thursday
+      rebound, setting stage for rally into year-end
+    rrf_score: 0.01389
+    relevant: true
   - id: 7737
     source: 1prime.ru
     title: Биткоин справляется, инфляция в США меняет сценарии
-    rrf_score: 0.01471
+    rrf_score: 0.0137
     relevant: false
+  - id: 8810
+    source: www.cnbc.com
+    title: 'S&P 500 futures tick higher, but index heads for losing week: Live updates'
+    rrf_score: 0.01351
+    relevant: true
   - id: 5849
     source: www.marketwatch.com
     title: U.S. wealth has shifted to stocks from homes. There are big reasons to
       worry.
-    rrf_score: 0.01449
+    rrf_score: 0.01333
     relevant: true
   - id: 5132
     source: www.kommersant.ru
     title: Индекс Мосбиржи вырос на 3%
-    rrf_score: 0.01429
+    rrf_score: 0.01316
     relevant: false
   - id: 5821
     source: www.cnbc.com
     title: Six Flags shares plunge after-hours following report of deadly roller coaster
       incident
-    rrf_score: 0.01408
+    rrf_score: 0.01299
     relevant: true
   - id: 7104
     source: www.kommersant.ru
     title: Главное на рынке недвижимости к утру 14 октября // Мосбиржа приостановит
       торги акциями «ПИК» с 20 октября
-    rrf_score: 0.01389
+    rrf_score: 0.01282
     relevant: false
   - id: 7708
     source: 1prime.ru
     title: 'Новак: власти обсуждают продажу топлива только через биржу'
-    rrf_score: 0.0137
+    rrf_score: 0.01266
     relevant: false
   - id: 7787
     source: www.marketwatch.com
     title: Anthropic’s slowing growth could be the AI trade’s latest red flag
-    rrf_score: 0.01351
+    rrf_score: 0.0125
     relevant: true
   - id: 5012
     source: www.kommersant.ru
     title: Getty Images начинает процедуру управляемого банкротства
-    rrf_score: 0.01333
+    rrf_score: null
     relevant: true
   - id: 7647
     source: 1prime.ru
     title: Apple впервые закрыла торги выше 5 триллионов долларов
-    rrf_score: 0.01316
+    rrf_score: null
     relevant: true
-  - id: 6862
-    source: www.kommersant.ru
-    title: Россия и США не обсуждали продление лицензии на поставки российского дизеля
-    rrf_score: 0.01299
-    relevant: false
   - id: 7770
     source: www.cnbc.com
     title: Berkshire Hathaway heads for 10th consecutive winning day. What's driving
       the stock
-    rrf_score: 0.01282
+    rrf_score: null
     relevant: true
   - id: 7772
     source: www.cnbc.com
     title: AI infrastructure stocks tumble. Here's a few reasons for the sell-off
-    rrf_score: 0.01266
+    rrf_score: null
     relevant: true
-  - id: 5052
-    source: www.kommersant.ru
-    title: Акции АФК «Система» выросли на 5% на новостях о продаже доли в «Медси»
-    rrf_score: 0.0125
-    relevant: false
   - id: 5816
     source: previous_annotation
-    title: 'Bank earnings live updates: JPMorgan, Wells Fargo, Goldman and Citigroup are all out. Here are the results'
+    title: 'Bank earnings live updates: JPMorgan, Wells Fargo, Goldman and Citigroup
+      are all out. Here are the results'
     rrf_score: null
     relevant: true
   - id: 5848
     source: previous_annotation
-    title: 'Six Flags’ stock slumps near 52-week lows after fatal accident'
+    title: Six Flags’ stock slumps near 52-week lows after fatal accident
     rrf_score: null
     relevant: true
   - id: 5459
     source: previous_annotation
-    title: 'Getty Images решила объявить о банкротстве'
+    title: Getty Images решила объявить о банкротстве
     rrf_score: null
     relevant: true
   - id: 5445
     source: previous_annotation
-    title: 'Reuters сообщило об историческом буме инвестиций в ИИ в США'
+    title: Reuters сообщило об историческом буме инвестиций в ИИ в США
     rrf_score: null
     relevant: true
   - id: 5846
     source: previous_annotation
-    title: 'Why the world’s No. 1 fund manager has just changed its mind on bonds for the first time in six years'
+    title: Why the world’s No. 1 fund manager has just changed its mind on bonds for
+      the first time in six years
     rrf_score: null
     relevant: true
   - id: 5796
@@ -698,12 +737,12 @@ queries:
     source: www.kommersant.ru
     title: 'Новак подтвердил обсуждение запрета на экспорт сжиженных углеводородных
       газов // Новак: власти обсуждают временный запрет экспорта СУГ непроизводителями'
-    rrf_score: 0.03227
+    rrf_score: 0.03178
     relevant: true
   - id: 7635
     source: www.interfax.ru
     title: Кабмин обсуждает ограничения экспорта СУГ из РФ с учетом ситуации на рынке
-    rrf_score: 0.03151
+    rrf_score: 0.03105
     relevant: true
   - id: 6962
     source: www.kommersant.ru
@@ -711,104 +750,105 @@ queries:
       газа
     rrf_score: 0.01639
     relevant: true
+  - id: 8770
+    source: 1prime.ru
+    title: Россия может выйти на третье или второе место в мире по экспорту СПГ
+    rrf_score: 0.01613
+    relevant: true
   - id: 7671
     source: 1prime.ru
     title: Россия увеличивает неэнергетический экспорт
-    rrf_score: 0.01613
+    rrf_score: 0.01587
+    relevant: false
+  - id: 7910
+    source: www.kommersant.ru
+    title: '«Русагротранс»: РФ экспортирует 3 млн т пшеницы в октябре в основном по
+      Балтике'
+    rrf_score: 0.01562
     relevant: false
   - id: 7148
     source: www.kommersant.ru
     title: Аналитики повысили прогноз экспортных цен на российский уголь на 2026–2027
       годы
-    rrf_score: 0.01562
+    rrf_score: 0.01515
     relevant: false
   - id: 5111
     source: www.kommersant.ru
     title: Россия сократила морской экспорт угля в сентябре на 17%
-    rrf_score: 0.01515
+    rrf_score: 0.01471
     relevant: false
+  - id: 8442
+    source: www.rbc.ru
+    title: ЕС увеличил импорт российского СПГ на 60% на фоне ограничений
+    rrf_score: 0.01449
+    relevant: true
+  - id: 8767
+    source: 1prime.ru
+    title: Россия поднялась на третье место среди основных поставщиков газа в ЕС
+    rrf_score: 0.01429
+    relevant: true
   - id: 5329
     source: www.kommersant.ru
     title: Правительство разрешит экспортировать дизель отдельным компаниям по квотам
-    rrf_score: 0.01493
+    rrf_score: 0.01408
     relevant: false
   - id: 7218
     source: www.kommersant.ru
     title: 'Силуанов: экспорт дизеля поддержит платежный баланс России'
-    rrf_score: 0.01471
+    rrf_score: 0.01389
     relevant: false
   - id: 7710
     source: 1prime.ru
     title: Российские нефтяные компании готовы начать экспорт дизельного топлива
-    rrf_score: 0.01449
+    rrf_score: 0.0137
     relevant: false
   - id: 7719
     source: 1prime.ru
     title: 'Никитин: Россия является крупнейшим мировым экспортером топлива'
-    rrf_score: 0.01429
+    rrf_score: 0.01351
     relevant: false
   - id: 7615
     source: www.interfax.ru
     title: В Кремле ждут положительных последствий для мирового рынка от экспорта
       российского дизеля
-    rrf_score: 0.01408
+    rrf_score: 0.01333
+    relevant: false
+  - id: 8075
+    source: www.kommersant.ru
+    title: '«Газпром» заявил о готовности к снабжению потребителей в зимнем сезоне
+      // «Газпром»: в подземных хранилищах создан резерв в 73,296 млрд кубометров
+      газа'
+    rrf_score: 0.01316
     relevant: false
   - id: 7631
     source: www.interfax.ru
     title: Новак сообщил, что компании готовы начать экспорт дизтоплива немедленно
-    rrf_score: 0.01389
+    rrf_score: 0.01299
     relevant: false
   - id: 5114
     source: www.kommersant.ru
     title: Внешнеторговый оборот России за восемь месяцев увеличился на 13,8%
-    rrf_score: 0.0137
+    rrf_score: 0.01282
     relevant: false
   - id: 5322
     source: www.kommersant.ru
     title: 'Песков назвал огромным спрос на российское дизельное топливо // Песков:
       Россия без проблем поставит дизель на мировые рынки'
-    rrf_score: 0.01351
-    relevant: false
-  - id: 7752
-    source: oilprice.com
-    title: Novak Calls U.S. Diesel Deal a 'Positive Signal' for Russia's Economy
-    rrf_score: 0.01333
-    relevant: false
-  - id: 5492
-    source: tass.ru
-    title: 'Силуанов: валютная выручка от экспорта дизеля поддержит платежный баланс
-      РФ'
-    rrf_score: 0.01316
-    relevant: false
-  - id: 5123
-    source: www.kommersant.ru
-    title: 'Новак: Россия в 2026 году поставила ЕС энергоресурсы на сумму $21,3 млрд'
-    rrf_score: 0.01299
-    relevant: false
-  - id: 5207
-    source: www.kommersant.ru
-    title: ЕС включил в санкционный список автопроизводителя «ГАЗ»
-    rrf_score: 0.01282
-    relevant: false
-  - id: 5711
-    source: 1prime.ru
-    title: Россия и Центральная Азия в августе нарастили экспорт нефти, заявили в
-      ОПЕК
     rrf_score: 0.01266
     relevant: false
-  - id: 5438
-    source: www.rbc.ru
-    title: Силуанов объяснил, почему дизельная сделка выгодна для России
+  - id: 8112
+    source: www.kommersant.ru
+    title: Песков отказался назвать других потенциальных покупателей российского дизтоплива
     rrf_score: 0.0125
     relevant: false
   - id: 5252
     source: previous_annotation
-    title: 'Словакия запросит у ЕК переходный период для поставок газа из России'
+    title: Словакия запросит у ЕК переходный период для поставок газа из России
     rrf_score: null
     relevant: true
   - id: 5797
     source: previous_annotation
-    title: 'ЕС скоро будет умолять Россию вернуть газ, пишут СМИ'
+    title: ЕС скоро будет умолять Россию вернуть газ, пишут СМИ
     rrf_score: null
     relevant: true
 - query: экономика Китая
@@ -818,113 +858,122 @@ queries:
     title: Ужесточение торговой политики ЕС скажется на экономике КНР незначительно
     rrf_score: 0.01639
     relevant: true
+  - id: 7977
+    source: www.kommersant.ru
+    title: Экспорт Китая вырос на максимальные за семь месяцев 36,3%
+    rrf_score: 0.01613
+    relevant: true
   - id: 7091
     source: www.kommersant.ru
     title: Экспорт китайских товаров достиг максимума за семь месяцев // Китайский
       экспорт вырос на максимальные за семь месяцев 36,3%
-    rrf_score: 0.01613
+    rrf_score: 0.01587
     relevant: true
   - id: 5678
     source: www.interfax.ru
     title: Китай сократит размер налоговой льготы для экспортеров электромобилей
-    rrf_score: 0.01587
+    rrf_score: 0.01562
     relevant: true
   - id: 5694
     source: www.interfax.ru
     title: В Китае продажи автомобилей в январе-сентябре сократились на 6,1%
-    rrf_score: 0.01562
+    rrf_score: 0.01538
     relevant: true
   - id: 7694
     source: 1prime.ru
     title: Китай надеется на углубление присутствия Apple на китайском рынке
-    rrf_score: 0.01538
+    rrf_score: 0.01515
     relevant: false
   - id: 5639
     source: www.globaltimes.cn
     title: 'China''s 2026 defense budget set at 1.94 trillion yuan: spokesperson'
-    rrf_score: 0.01515
+    rrf_score: 0.01493
     relevant: false
   - id: 5768
     source: 1prime.ru
     title: 'Bloomberg: Китай замедлит использование нефти из запасов'
-    rrf_score: 0.01493
+    rrf_score: 0.01471
     relevant: false
   - id: 5812
     source: oilprice.com
     title: China's Auto Exports Explode as Domestic Demand Craters
-    rrf_score: 0.01471
+    rrf_score: 0.01449
     relevant: true
+  - id: 8671
+    source: www.interfax.ru
+    title: Китай готовится ввести новые ограничения на экспорт ИИ-технологий
+    rrf_score: 0.01429
+    relevant: false
   - id: 7711
     source: 1prime.ru
     title: В Китае заявили о начале перехода к коммерциализации водородной энергетики
-    rrf_score: 0.01449
+    rrf_score: 0.01408
     relevant: true
+  - id: 8732
+    source: 1prime.ru
+    title: Китай планирует опубликовать доклад о новых технологиях хранения энергии
+    rrf_score: 0.01389
+    relevant: false
+  - id: 8792
+    source: oilprice.com
+    title: China’s Sufficient Gas Stocks Could Ease Winter Supply Concerns
+    rrf_score: 0.0137
+    relevant: false
   - id: 5629
     source: www.globaltimes.cn
     title: China to introduce new train timetable from July 1, including high-speed
       train service between Beijing and Urumqi
-    rrf_score: 0.01429
+    rrf_score: 0.01351
     relevant: false
   - id: 7650
     source: 1prime.ru
     title: 'Володин: соглашение с Китаем позволит развивать отношения'
-    rrf_score: 0.01408
+    rrf_score: 0.01333
+    relevant: true
+  - id: 8715
+    source: 1prime.ru
+    title: На Тайване назвали темпы роста экономики самыми быстрыми за 39 лет
+    rrf_score: 0.01316
     relevant: true
   - id: 7740
     source: oilprice.com
     title: Lithium Prices Plunge as EU-China Trade Deal Sparks Demand Fears
-    rrf_score: 0.01389
+    rrf_score: 0.01299
     relevant: true
   - id: 5638
     source: www.globaltimes.cn
     title: Renowned scholar and political advisor expresses confidence in China's
       AI development, computing power
-    rrf_score: 0.0137
+    rrf_score: 0.01282
     relevant: false
   - id: 7680
     source: 1prime.ru
     title: В Китае призвали укреплять сотрудничество в сфере водородной энергетики
-    rrf_score: 0.01351
+    rrf_score: 0.01266
     relevant: true
   - id: 7672
     source: 1prime.ru
     title: 'Оверчук: России удалось сохранить макроэкономическую стабильность'
-    rrf_score: 0.01333
+    rrf_score: 0.0125
     relevant: false
   - id: 5779
     source: 1prime.ru
     title: Россия предложила Китаю активнее инвестировать в объекты турбизнеса
-    rrf_score: 0.01316
+    rrf_score: null
     relevant: true
-  - id: 5114
-    source: www.kommersant.ru
-    title: Внешнеторговый оборот России за восемь месяцев увеличился на 13,8%
-    rrf_score: 0.01299
-    relevant: false
   - id: 7769
     source: www.cnbc.com
     title: China indicates rare earths will keep flowing to EU, regardless of U.S.
       trade deal expiration
-    rrf_score: 0.01282
+    rrf_score: null
     relevant: true
-  - id: 5341
-    source: www.kommersant.ru
-    title: В сентябре поступления бюджета вновь опередили его траты
-    rrf_score: 0.01266
-    relevant: false
-  - id: 5492
-    source: tass.ru
-    title: 'Силуанов: валютная выручка от экспорта дизеля поддержит платежный баланс
-      РФ'
-    rrf_score: 0.0125
-    relevant: false
 - query: санкции против России
   candidates:
   - id: 5247
     source: www.kommersant.ru
     title: 'Главы МИД ЕС утвердили новые санкции против российского ВПК // Каллас:
       новые санкции против российского ВПК насчитывают 1,6 тыс. пунктов'
-    rrf_score: 0.03227
+    rrf_score: 0.03178
     relevant: true
   - id: 5049
     source: www.kommersant.ru
@@ -932,37 +981,49 @@ queries:
       Politico: ЕК может до конца года представить 23-й пакет санкций против России'
     rrf_score: 0.03178
     relevant: true
-  - id: 5253
-    source: www.kommersant.ru
-    title: 'Politico: ЕС намерен ввести санкции против российских производителей ракет'
-    rrf_score: 0.03105
-    relevant: true
   - id: 5233
     source: www.kommersant.ru
     title: 'МИД Эстонии уточнил, кого добавили в новый пакет санкций против России
       // Цахкна: ЕС внес в санкционный список по России 743 физлица и 826 компаний'
     rrf_score: 0.03105
     relevant: true
+  - id: 5253
+    source: www.kommersant.ru
+    title: 'Politico: ЕС намерен ввести санкции против российских производителей ракет'
+    rrf_score: 0.03062
+    relevant: true
   - id: 5018
     source: www.kommersant.ru
     title: 'Песков: новые санкции ЕС могут помешать топливной сделке США и России'
-    rrf_score: 0.0303
+    rrf_score: 0.02986
     relevant: true
   - id: 6979
     source: www.kommersant.ru
     title: Bank of America заплатит $11,7 млн за обход санкций против России и других
       стран
-    rrf_score: 0.02951
+    rrf_score: 0.02932
+    relevant: true
+  - id: 7968
+    source: www.kommersant.ru
+    title: В США экстрадировали россиянина по обвинению в обходе санкций против РФ
+    rrf_score: 0.02881
+    relevant: true
+  - id: 7909
+    source: www.kommersant.ru
+    title: 'Глава ЕК пообещала не снимать санкции с России до окончания конфликта
+      на Украине // Фон дер Ляйен: ЕС не отменит ни одной введенной против России
+      санкции'
+    rrf_score: 0.02724
     relevant: true
   - id: 7374
     source: www.rbc.ru
     title: Кремль назвал санкции ЕС против спортсменов попыткой исключить сильнейших
-    rrf_score: 0.02721
+    rrf_score: 0.02648
     relevant: true
   - id: 7005
     source: www.kommersant.ru
     title: Евросоюз частично снял санкции с Михаила Гуцериева
-    rrf_score: 0.02386
+    rrf_score: 0.02284
     relevant: true
   - id: 5152
     source: www.kommersant.ru
@@ -1002,44 +1063,49 @@ queries:
     source: www.kommersant.ru
     title: Эксперты агентства АКРА проанализировали влияние санкций на российский
       агропром
-    rrf_score: 0.0137
+    rrf_score: 0.01351
     relevant: true
   - id: 5624
     source: news.xinhuanet.com
     title: "<a href=\"http://news.xinhuanet.com/english/2017-03/30/c_136171059.htm\"\
       \ target=\"_blank\">DPRK slams U.S. for orchestrating efforts to tighten financial\
       \ sanctions against \nPyongyang</a>"
-    rrf_score: 0.01351
+    rrf_score: 0.01333
     relevant: false
   - id: 5781
     source: 1prime.ru
     title: Санкции ЕС из-за дизеля могут помешать договоренности РФ и США
-    rrf_score: 0.01333
+    rrf_score: 0.01316
+    relevant: true
+  - id: 8085
+    source: www.kommersant.ru
+    title: Глава Европарламента призвала ужесточить визовые ограничения для россиян
+    rrf_score: 0.01299
     relevant: true
   - id: 5229
     source: www.kommersant.ru
     title: ЕС ввел санкции против бывшего премьера Украины Арбузова и мэра Ялты
-    rrf_score: 0.01316
+    rrf_score: null
     relevant: true
   - id: 5078
     source: www.kommersant.ru
     title: АКРА проанализировало влияние продовольственного эмбарго на агрокомплекс
       РФ
-    rrf_score: 0.01299
+    rrf_score: null
     relevant: true
   - id: 5222
     source: www.kommersant.ru
     title: Евросоюз ввел санкции против «Самолета» и его гендиректора Анны Акиньшиной
-    rrf_score: 0.01282
+    rrf_score: null
     relevant: true
   - id: 5207
     source: previous_annotation
-    title: 'ЕС включил в санкционный список автопроизводителя «ГАЗ»'
+    title: ЕС включил в санкционный список автопроизводителя «ГАЗ»
     rrf_score: null
     relevant: true
   - id: 5453
     source: previous_annotation
-    title: 'Посольство России обвинило Францию в «разбое и пиратстве»'
+    title: Посольство России обвинило Францию в «разбое и пиратстве»
     rrf_score: null
     relevant: true
 - query: ФРС ставка
@@ -1060,96 +1126,94 @@ queries:
     title: МВФ повысил прогноз роста мировой экономики на 2026 год до 3,1%
     rrf_score: 0.01587
     relevant: false
+  - id: 8806
+    source: www.cnbc.com
+    title: Fed's Warsh withholds rate signal, praises recent global tightening
+    rrf_score: 0.01562
+    relevant: true
+  - id: 8888
+    source: www.nytimes.com
+    title: Warsh Vows to Tame Inflation as A.I. Delivers ‘Shock’ to Economy
+    rrf_score: 0.01538
+    relevant: false
+  - id: 8843
+    source: www.marketwatch.com
+    title: Here are the key things Fed Chairman Kevin Warsh said — and didn’t say
+      — while Americans were sleeping Thursday night
+    rrf_score: 0.01515
+    relevant: false
   - id: 5739
     source: 1prime.ru
     title: Ставка RUONIA снизилась до 13,84%
-    rrf_score: 0.01562
+    rrf_score: 0.01493
     relevant: false
   - id: 7852
     source: www.pbs.org
     title: The Social Security COLA for 2027 is set. Here's what experts say you need
       to know
-    rrf_score: 0.01538
+    rrf_score: 0.01471
     relevant: false
   - id: 6958
     source: www.kommersant.ru
     title: ФАС предложила повысить тарифы «Транснефти» на прокачку нефти на 5%
-    rrf_score: 0.01515
+    rrf_score: 0.01449
+    relevant: false
+  - id: 8840
+    source: www.marketwatch.com
+    title: Jefferies technical analyst finds an encouraging development in Thursday
+      rebound, setting stage for rally into year-end
+    rrf_score: 0.01429
     relevant: false
   - id: 7743
     source: oilprice.com
     title: Oil Market Tightens as Tanker Attacks and Inventory Draws Mount
-    rrf_score: 0.01493
+    rrf_score: 0.01408
+    relevant: false
+  - id: 8799
+    source: oilprice.com
+    title: 'Standard Chartered: Trump''s Russian Diesel Won''t Add New Supply'
+    rrf_score: 0.01389
     relevant: false
   - id: 5223
     source: www.kommersant.ru
     title: В ЦБ назвали условие для снижения ставки в 2027 году
-    rrf_score: 0.01471
+    rrf_score: 0.0137
     relevant: false
   - id: 6949
     source: www.kommersant.ru
     title: Бизнес не согласен с налоговыми предложениями правительства
-    rrf_score: 0.01449
+    rrf_score: 0.01351
+    relevant: false
+  - id: 8790
+    source: oilprice.com
+    title: Trump's Oil Price Strategy Faces Two Major Tests This Weekend
+    rrf_score: 0.01333
     relevant: false
   - id: 7098
     source: www.kommersant.ru
     title: Сбербанк ждет сохранения ключевой ставки ЦБ в октябре
-    rrf_score: 0.01429
+    rrf_score: 0.01316
+    relevant: false
+  - id: 8717
+    source: 1prime.ru
+    title: Ставка RUONIA 15 октября осталась на уровне 13,91%
+    rrf_score: 0.01299
     relevant: false
   - id: 5887
     source: www.nytimes.com
     title: Musk Pours $276 Million Into the Midterms, and Federal Agents Raid Home
       of Rep. Ilhan Omar
-    rrf_score: 0.01408
+    rrf_score: 0.01282
+    relevant: false
+  - id: 8722
+    source: 1prime.ru
+    title: РСТ выступает за сохранение ставки туристического налога не выше 2%
+    rrf_score: 0.01266
     relevant: false
   - id: 7856
     source: www.pbs.org
     title: Lawyers for Federal Reserve's Lisa Cook say White House hearing set up
       by Trump is 'biased'
-    rrf_score: 0.01389
-    relevant: false
-  - id: 5150
-    source: www.kommersant.ru
-    title: Договоренности президентов РФ и США о дизеле привели к резкому укреплению
-      рубля
-    rrf_score: 0.0137
-    relevant: false
-  - id: 6948
-    source: www.kommersant.ru
-    title: Аналитики сошлись на малом ускорении роста ВВП при более высоких ценах
-      и ставках
-    rrf_score: 0.01351
-    relevant: false
-  - id: 7744
-    source: oilprice.com
-    title: White House Turns to Korean War-Era Law as Diesel Prices Stay Above $6
-    rrf_score: 0.01333
-    relevant: false
-  - id: 5808
-    source: oilprice.com
-    title: This Ultra-Rare Gas Could Become An Ace In Canada’s Hands
-    rrf_score: 0.01316
-    relevant: false
-  - id: 7741
-    source: oilprice.com
-    title: Oil Prices Fall as Trump Considers Easing Sanctions on Shadow Fleet Tankers
-    rrf_score: 0.01299
-    relevant: false
-  - id: 7756
-    source: www.cnbc.com
-    title: 'Analysis: Why a $2 trillion deficit and 5% Treasury yields are becoming
-      America''s biggest economic challenge'
-    rrf_score: 0.01282
-    relevant: false
-  - id: 5199
-    source: www.kommersant.ru
-    title: 'Силуанов: бюджет на 2027-2029 годы выдержит любые колебания на мировых
-      рынках'
-    rrf_score: 0.01266
-    relevant: false
-  - id: 5213
-    source: www.kommersant.ru
-    title: Brent превысила $106 за баррель впервые с конца сентября
     rrf_score: 0.0125
     relevant: false
 - query: бюджет России
@@ -1169,13 +1233,24 @@ queries:
     source: tass.ru
     title: 'Силуанов: бюджет РФ получит налоги с финрезультатов компаний от экспорта
       дизеля'
-    rrf_score: 0.02822
+    rrf_score: 0.02725
     relevant: true
+  - id: 7879
+    source: www.kommersant.ru
+    title: Организаторы «Времени героев» уверены в продолжении его финансирования
+      после 2027 года
+    rrf_score: 0.02625
+    relevant: false
   - id: 5689
     source: www.interfax.ru
     title: Госдума утвердила исполнение бюджета РФ за 2025 г. с дефицитом 5,63 трлн
       руб.
     rrf_score: 0.01639
+    relevant: true
+  - id: 7876
+    source: www.kommersant.ru
+    title: Страховые пенсии проиндексируют темпами выше инфляции в 2027 году
+    rrf_score: 0.01587
     relevant: true
   - id: 6864
     source: www.kommersant.ru
@@ -1183,97 +1258,98 @@ queries:
       бюджета Москвы в 2027 году запланированы в объеме 5,9 трлн рублей
     rrf_score: 0.01562
     relevant: false
+  - id: 8481
+    source: tass.ru
+    title: 'Котяков: поручение Путина о повышении МРОТ до 35 тыс. рублей к 2030 году
+      исполнят'
+    rrf_score: 0.01538
+    relevant: true
   - id: 7613
     source: www.interfax.ru
     title: Проект о бюджете на трехлетку Дума рассмотрит во втором чтении 19 ноября,
       24-го – в третьем
-    rrf_score: 0.01538
+    rrf_score: 0.01515
     relevant: true
   - id: 5697
     source: www.interfax.ru
     title: Силуанов оценил ненефтегазовые допдоходы бюджета в 2026 году в 1 трлн рублей
-    rrf_score: 0.01515
+    rrf_score: 0.01493
     relevant: true
   - id: 5341
     source: www.kommersant.ru
     title: В сентябре поступления бюджета вновь опередили его траты
-    rrf_score: 0.01493
+    rrf_score: 0.01471
     relevant: true
   - id: 5710
     source: 1prime.ru
     title: Володин призвал делать все для повышения эффективности бюджетного рубля
-    rrf_score: 0.01471
+    rrf_score: 0.01449
     relevant: true
   - id: 5528
     source: tass.ru
     title: Госдума утвердила отчет об исполнении федерального бюджета за 2025 год
-    rrf_score: 0.01449
+    rrf_score: 0.01429
     relevant: true
   - id: 5766
     source: 1prime.ru
     title: 'Силуанов: бюджет 2025 года обеспечил все приоритеты страны'
-    rrf_score: 0.01429
+    rrf_score: 0.01408
     relevant: true
   - id: 7674
     source: 1prime.ru
     title: В Москве соцрасходы составят половину расходов бюджета в 2027 году
-    rrf_score: 0.01408
+    rrf_score: 0.01389
     relevant: false
   - id: 5723
     source: 1prime.ru
     title: Госдума утвердила отчет об исполнении федерального бюджета за 2025 год
-    rrf_score: 0.01389
+    rrf_score: 0.0137
+    relevant: true
+  - id: 8730
+    source: 1prime.ru
+    title: На семейные налоговые выплаты в 2027 году выделят 72 миллиарда рублей
+    rrf_score: 0.01351
     relevant: true
   - id: 7235
     source: www.kommersant.ru
     title: Силуанов спрогнозировал пополнение ФНБ на 1 трлн рублей в 2026 году
-    rrf_score: 0.0137
+    rrf_score: 0.01333
+    relevant: true
+  - id: 8745
+    source: 1prime.ru
+    title: Средствами маткапитала в 2027 году воспользуются более 1,8 миллиона россиян
+    rrf_score: 0.01316
     relevant: true
   - id: 6959
     source: www.kommersant.ru
     title: Думские фракции готовятся к рассмотрению бюджета
-    rrf_score: 0.01351
+    rrf_score: 0.01299
     relevant: true
   - id: 5224
     source: www.kommersant.ru
     title: На спутники связи и вещания «Экспресс» выделят 53,6 млрд рублей до 2029
       года
-    rrf_score: 0.01333
+    rrf_score: null
     relevant: true
-  - id: 7477
-    source: tass.ru
-    title: Мерц заявил о необходимости значительно сократить долгосрочный бюджет ЕС
-    rrf_score: 0.01316
-    relevant: false
-  - id: 5282
-    source: www.kommersant.ru
-    title: Российский рынок больших данных вырос за 2025 год на 20%
-    rrf_score: 0.01299
-    relevant: false
   - id: 7440
     source: tass.ru
     title: РСПП предлагает доработать предложенные в бюджетном пакете фискальные новации
-    rrf_score: 0.01282
+    rrf_score: null
     relevant: true
-  - id: 6996
-    source: www.kommersant.ru
-    title: 'Аналитики ЦБ ухудшили прогнозы по ключевой ставке и курсу рубля // ЦБ:
-      аналитики повысили прогноз по инфляции до 7,1% в 2026 году'
-    rrf_score: 0.01266
-    relevant: false
   - id: 5551
     source: previous_annotation
-    title: 'Минфин сконцентрировал ресурсы бюджета на 2027-2029 годы на главных приоритетах'
+    title: Минфин сконцентрировал ресурсы бюджета на 2027-2029 годы на главных приоритетах
     rrf_score: null
     relevant: true
   - id: 5492
     source: previous_annotation
-    title: 'Силуанов: валютная выручка от экспорта дизеля поддержит платежный баланс РФ'
+    title: 'Силуанов: валютная выручка от экспорта дизеля поддержит платежный баланс
+      РФ'
     rrf_score: null
     relevant: true
   - id: 5709
     source: previous_annotation
-    title: 'Социально ориентированные бюджеты не стыдно поддерживать, заявил Володин'
+    title: Социально ориентированные бюджеты не стыдно поддерживать, заявил Володин
     rrf_score: null
     relevant: true
 - query: доходность облигаций
@@ -1288,102 +1364,112 @@ queries:
     title: Минфин разместил ОФЗ на 73,5 млрд рублей
     rrf_score: 0.01613
     relevant: true
+  - id: 8887
+    source: www.nytimes.com
+    title: Why Bad News in the Bond Market May Be Good News for Investors
+    rrf_score: 0.01587
+    relevant: false
+  - id: 7887
+    source: www.kommersant.ru
+    title: Американские университеты рекордно заработали на инвестициях в фондовый
+      рынок
+    rrf_score: 0.01562
+    relevant: false
   - id: 5898
     source: www.nytimes.com
     title: The Forces Driving Up Bond Yields Take a Troubling Turn
-    rrf_score: 0.01587
+    rrf_score: 0.01538
     relevant: true
   - id: 7756
     source: www.cnbc.com
     title: 'Analysis: Why a $2 trillion deficit and 5% Treasury yields are becoming
       America''s biggest economic challenge'
-    rrf_score: 0.01562
+    rrf_score: 0.01515
     relevant: true
   - id: 5842
     source: www.cnbc.com
     title: IMF warns bond yields could see a 'disorderly' spike as debt, inflation
       risks worsen
-    rrf_score: 0.01538
+    rrf_score: 0.01493
     relevant: true
   - id: 5148
     source: www.kommersant.ru
     title: Выплата дивидендов во время банкротного моратория дошла до Верховного суда
-    rrf_score: 0.01515
+    rrf_score: 0.01471
     relevant: false
   - id: 6938
     source: www.kommersant.ru
     title: Чистая прибыль банков по итогам 2026 года может впервые превысить 4 трлн
       рублей
-    rrf_score: 0.01493
+    rrf_score: 0.01449
     relevant: false
   - id: 5304
     source: www.kommersant.ru
     title: ЦБ и Минфин не поддержали владельцев облигаций
-    rrf_score: 0.01471
+    rrf_score: 0.01429
     relevant: true
+  - id: 8008
+    source: www.kommersant.ru
+    title: Эмитенты активизировали размещение облигаций в юанях с начала октября
+    rrf_score: 0.01408
+    relevant: true
+  - id: 8831
+    source: www.cnbc.com
+    title: The IPO drought is driving private equity-owned companies to the debt market
+      to pay investors
+    rrf_score: 0.01389
+    relevant: false
   - id: 5199
     source: www.kommersant.ru
     title: 'Силуанов: бюджет на 2027-2029 годы выдержит любые колебания на мировых
       рынках'
-    rrf_score: 0.01449
+    rrf_score: 0.0137
     relevant: false
+  - id: 8760
+    source: 1prime.ru
+    title: '"Фосагро" соберет заявки на облигации в долларах и юанях 21 октября'
+    rrf_score: 0.01351
+    relevant: true
   - id: 5697
     source: www.interfax.ru
     title: Силуанов оценил ненефтегазовые допдоходы бюджета в 2026 году в 1 трлн рублей
-    rrf_score: 0.01429
+    rrf_score: 0.01333
+    relevant: false
+  - id: 8670
+    source: www.interfax.ru
+    title: '"Ростелеком" сохраняет планы по выручке-2027 выше 1 трлн рублей'
+    rrf_score: 0.01316
+    relevant: false
+  - id: 8492
+    source: tass.ru
+    title: '"Ростелеком" сохраняет планы по выручке свыше 1 трлн рублей'
+    rrf_score: 0.01299
     relevant: false
   - id: 6981
     source: www.kommersant.ru
     title: «АльфаСтрахование» назвала убыточность в ОСАГО рекордной за несколько лет
-    rrf_score: 0.01408
+    rrf_score: 0.01282
     relevant: false
   - id: 5689
     source: www.interfax.ru
     title: Госдума утвердила исполнение бюджета РФ за 2025 г. с дефицитом 5,63 трлн
       руб.
-    rrf_score: 0.01389
+    rrf_score: 0.01266
     relevant: false
   - id: 5430
     source: www.npr.org
     title: What ice cream has to do with this year's Nobel Prize in economics
-    rrf_score: 0.0137
-    relevant: false
-  - id: 5174
-    source: www.kommersant.ru
-    title: Нобель по экономике присужден за исследования по управлению ожиданиями
-    rrf_score: 0.01351
-    relevant: false
-  - id: 7382
-    source: www.rbc.ru
-    title: Минэнерго сообщило, что убытки угольной отрасли снизятся более чем втрое
-    rrf_score: 0.01333
-    relevant: false
-  - id: 6889
-    source: www.kommersant.ru
-    title: Акции «Совкомфлота» выросли на 5,4% на новостях о возможном ослаблении
-      санкций для «теневого флота» // Акции «Совкомфлота» выросли до 88,99 рублей
-      после сообщения Reuters о санкциях
-    rrf_score: 0.01316
+    rrf_score: 0.0125
     relevant: false
   - id: 5846
     source: www.marketwatch.com
     title: Why the world’s No. 1 fund manager has just changed its mind on bonds for
       the first time in six years
-    rrf_score: 0.01299
+    rrf_score: null
     relevant: true
-  - id: 5847
-    source: www.marketwatch.com
-    title: The South Korean stock market is in free fall, and these are the reasons
-    rrf_score: 0.01282
-    relevant: false
   - id: 7792
     source: www.marketwatch.com
     title: You’re probably too invested in equities. Why a 60-40 portfolio is still
       the smart way to go.
-    rrf_score: 0.01266
+    rrf_score: null
     relevant: true
-  - id: 7757
-    source: www.cnbc.com
-    title: These stocks offer some of the best risk-adjusted upside on Wall Street
-    rrf_score: 0.0125
-    relevant: false
