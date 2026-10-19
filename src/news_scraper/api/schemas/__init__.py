@@ -1,3 +1,4 @@
+from news_scraper.api.schemas.agent import AgentRequest, AgentResponse
 from news_scraper.api.schemas.article import (
     ArticleDetailResponse,
     ArticleResponse,
@@ -23,6 +24,8 @@ __all__ = [
     'SearchRequest',
     'SearchResponse',
     'SearchResultResponse',
+    'AgentRequest',
+    'AgentResponse',
 ]
 """
 Pydantic-схемы API.

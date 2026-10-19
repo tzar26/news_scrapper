@@ -61,3 +61,14 @@ def render_sidebar() -> None:
         if st.button('Обновить данные'):
             st.cache_data.clear()
             st.rerun()
+
+
+def ask_agent(question: str) -> dict:
+    """Отправляет вопрос в POST /agent."""
+    with httpx.Client(timeout=120.0) as client:  # агент может думать долго
+        response = client.post(
+            f'{API_BASE_URL}/agent',
+            json={'question': question},
+        )
+        response.raise_for_status()
+        return response.json()
