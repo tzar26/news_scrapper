@@ -11,6 +11,7 @@ import re
 from dataclasses import dataclass, field
 
 import ollama
+from langfuse import observe
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from news_scraper.infra.ollama_client import OllamaClient
@@ -71,6 +72,7 @@ def _extract_sources(
     ]
 
 
+@observe()
 async def answer_question(
     session: AsyncSession,
     question: str,

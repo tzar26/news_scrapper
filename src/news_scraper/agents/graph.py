@@ -8,6 +8,7 @@ import re
 from typing import Any, Literal
 
 import ollama
+from langfuse.langchain import CallbackHandler
 from langgraph.graph import END, START, StateGraph
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -240,7 +241,10 @@ async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
         'final_answer': None,
     }
 
-    result = await app.ainvoke(initial)
+    langfuse_handler = CallbackHandler()
+    config = {'callbacks': [langfuse_handler]}
+
+    result = await app.ainvoke(initial, config=config)
     final = result.get('final_answer') or 'Не удалось сформировать ответ.'
 
     return {

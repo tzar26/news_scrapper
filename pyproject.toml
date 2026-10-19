@@ -29,6 +29,7 @@ dependencies = [
     # dashboard
     "streamlit>=1.40",
     "FlashRank==0.2.10",
+    "langfuse==5.0.2",
 ]
 
 [project.optional-dependencies]
