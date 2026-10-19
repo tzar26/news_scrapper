@@ -7,7 +7,9 @@ LangChain не используется — на нашем объёме его 
 
 from __future__ import annotations
 
+import json
 import re
+from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 
 import ollama
@@ -145,6 +147,72 @@ async def answer_question(
         answer_text = response['message']['content']
         sources = _extract_sources(answer_text, results)
         return RAGAnswer(answer=answer_text, sources=sources, results=results)
+
+    finally:
+        if owns_client:
+            await client.aclose()
+
+
+async def answer_question_stream(
+    session: AsyncSession,
+    question: str,
+    *,
+    top_k: int = 5,
+    rerank: bool = False,
+    model: str = DEFAULT_MODEL,
+    client: OllamaClient | None = None,
+) -> AsyncIterator[str]:
+    """Стриминговый ответ на вопрос (SSE).
+
+    Возвращает асинхронный генератор, который выдаёт кусочки текста.
+    В самом конце добавляет строку '__SOURCES__<json>', где json —
+    список источников с полями id, url, title.
+    """
+    from news_scraper.rag.retriever import search, search_with_rerank
+
+    owns_client = client is None
+    if client is None:
+        client = OllamaClient()
+
+    try:
+        if rerank:
+            results = await search_with_rerank(
+                session, question, top_k=top_k, candidates=30, client=client
+            )
+        else:
+            results = await search(session, question, top_k=top_k, client=client)
+
+        if not results:
+            yield 'В базе нет информации по этому запросу.'
+            return
+
+        context = format_context(results)
+        user_prompt = USER_PROMPT_TEMPLATE.format(question=question, context=context)
+
+        ollama_client = ollama.AsyncClient(host=settings.ollama_base_url)
+        stream = await ollama_client.chat(
+            model=model,
+            messages=[
+                {'role': 'system', 'content': SYSTEM_PROMPT},
+                {'role': 'user', 'content': user_prompt},
+            ],
+            options={'num_ctx': 4096, 'temperature': 0.3},
+            stream=True,
+        )
+
+        full_text = ''
+        async for chunk in stream:
+            token = chunk['message']['content']
+            full_text += token
+            yield token
+
+        # В конце парсим источники по полному тексту
+        sources = _extract_sources(full_text, results)
+        sources_json = json.dumps(
+            [{'id': s.id, 'url': s.url, 'title': s.title} for s in sources],
+            ensure_ascii=False,
+        )
+        yield f'\n\n__SOURCES__{sources_json}'
 
     finally:
         if owns_client:
