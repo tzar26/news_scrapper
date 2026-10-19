@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+from collections.abc import AsyncIterator
 from typing import Any, Literal
 
 import ollama
@@ -252,3 +253,82 @@ async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
         'iterations': result['iterations'],
         'messages': result['messages'],
     }
+
+
+async def run_agent_stream(
+    session: AsyncSession,
+    question: str,
+) -> AsyncIterator[str]:
+    """Стриминговый запуск агента.
+
+    Выдаёт SSE-форматированные строки:
+    - data: {"type": "status", "content": "..."} — статусы шагов.
+    - data: {"type": "token", "content": "..."} — токены финального ответа.
+    - data: {"type": "end"} — завершение.
+    """
+    tools = [make_search_tool(session)]
+    tools_map = {t.name: t for t in tools}
+
+    async def planner_node(state: AgentState) -> dict[str, Any]:
+        return await _call_planner(state, tools)
+
+    async def tools_node(state: AgentState) -> dict[str, Any]:
+        return await _execute_tools(state, tools_map)
+
+    async def finalize_node(state: AgentState) -> dict[str, Any]:
+        return await _finalize(state)
+
+    graph = StateGraph(AgentState)
+    graph.add_node('planner', planner_node)
+    graph.add_node('tools', tools_node)
+    graph.add_node('finalize', finalize_node)
+    graph.add_edge(START, 'planner')
+    graph.add_conditional_edges(
+        'planner',
+        _should_continue,
+        {'tools': 'tools', 'finalize': 'finalize'},
+    )
+    graph.add_edge('tools', 'planner')
+    graph.add_edge('finalize', END)
+
+    app = graph.compile()
+
+    initial: AgentState = {
+        'question': question,
+        'messages': [{'role': 'user', 'content': question}],
+        'iterations': 0,
+        'final_answer': None,
+    }
+
+    yield 'data: {"type": "status", "content": "🤔 Агент планирует запрос..."}\n\n'
+
+    try:
+        async for event in app.astream_events(initial, version='v2'):
+            kind = event['event']
+
+            if kind == 'on_chain_start' and event.get('name') == 'tools':
+                yield 'data: {"type": "status", "content": "🔍 Ищу статьи в базе..."}\n\n'
+
+            if kind == 'on_chain_end' and event.get('name') == 'planner':
+                output = event['data'].get('output', {})
+                if output.get('final_answer'):
+                    final_text = output['final_answer']
+                    yield 'data: {"type": "status", "content": "✍️ Формирую ответ..."}\n\n'
+
+                    import asyncio
+
+                    words = final_text.split(' ')
+                    for i, word in enumerate(words):
+                        chunk = word + (' ' if i < len(words) - 1 else '')
+                        payload = json.dumps({'type': 'token', 'content': chunk})
+                        yield f'data: {payload}\n\n'
+                        await asyncio.sleep(0.04)  # Небольшая пауза для эффекта печатной машинки
+
+                    # Безопасно завершаем без запроса несуществующих полей
+                    yield 'data: {"type": "end"}\n\n'
+                    return
+
+    except Exception as exc:
+        logger.exception('Error during agent streaming')
+        error_msg = json.dumps({'type': 'error', 'content': str(exc)})
+        yield f'data: {error_msg}\n\n'

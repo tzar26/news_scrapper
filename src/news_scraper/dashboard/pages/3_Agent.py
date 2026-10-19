@@ -1,8 +1,10 @@
+"""Страница Agent: LangGraph-агент с multi-step reasoning."""
+
 from __future__ import annotations
 
 import streamlit as st
 
-from news_scraper.dashboard._shared import ask_agent, render_sidebar
+from news_scraper.dashboard._shared import render_sidebar, stream_agent
 
 
 def main() -> None:
@@ -20,24 +22,19 @@ def main() -> None:
         )
         submitted = st.form_submit_button('Спросить агента')
 
-        if not submitted:
-            st.info('Задайте сложный вопрос. Например: «Сравни ключевую ставку и инфляцию».')
-            return
+    if not submitted:
+        st.info('Задайте сложный вопрос. Например: «Сравни ключевую ставку и инфляцию».')
+        return
 
-        if not question.strip():
-            st.warning('Введите вопрос.')
-            return
+    if not question.strip():
+        st.warning('Введите вопрос.')
+        return
 
-        with st.spinner('Агент думает (может занять 15-20 сек)...'):
-            try:
-                result = ask_agent(question)
-            except Exception as exc:
-                st.error(f'Ошибка: {exc}')
-                return
+    st.markdown('### Ответ')
 
-            st.markdown('### Ответ')
-            st.markdown(result['answer'])
-            st.caption(f'Шагов сделано: {result["iterations"]}')
+    # stream_agent будет yield-ить токены, а статусы печатать через st.info
+    with st.spinner('Агент работает...'):
+        st.write_stream(stream_agent(question))
 
 
 if __name__ == '__main__':

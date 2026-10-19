@@ -81,8 +81,6 @@ def stream_ask(question: str, top_k: int = 5, rerank: bool = False):
     Читает SSE от /ask/stream. Кусочки текста отдаёт в yield.
     Источники сохраняет в st.session_state['sources'].
     """
-    import streamlit as st
-
     st.session_state['sources'] = []
 
     payload = {'question': question, 'top_k': top_k, 'rerank': rerank}
@@ -104,3 +102,45 @@ def stream_ask(question: str, top_k: int = 5, rerank: bool = False):
 
             # Возвращаем экранированные переносы строк обратно
             yield chunk.replace('\\n', '\n')
+
+
+def stream_agent(question: str):
+    """Генератор для стриминга агента в Streamlit."""
+    import json
+
+    import httpx
+    import streamlit as st
+
+    payload = {'question': question}
+
+    try:
+        with httpx.stream(
+            'POST', f'{API_BASE_URL}/agent/stream', json=payload, timeout=120.0
+        ) as response:
+            response.raise_for_status()
+            for line in response.iter_lines():
+                if not line.startswith('data: '):
+                    continue
+
+                data_str = line[6:]
+                if not data_str:
+                    continue
+
+                try:
+                    data = json.loads(data_str)
+                except json.JSONDecodeError:
+                    continue
+
+                if data['type'] == 'status':
+                    st.info(data['content'])
+                elif data['type'] == 'token':
+                    yield data['content']
+                elif data['type'] == 'end':
+                    break
+                elif data['type'] == 'error':
+                    st.error(f'Ошибка агента: {data["content"]}')
+                    break
+    except httpx.RemoteProtocolError:
+        st.error('Соединение с сервером прервалось во время стриминга.')
+    except Exception as exc:
+        st.error(f'Ошибка при чтении потока: {exc}')
