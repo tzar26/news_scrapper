@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-import time
-
 import streamlit as st
 
-from news_scraper.dashboard._shared import ask_question, render_sidebar
+from news_scraper.dashboard._shared import ask_question, render_sidebar, stream_ask
 
 
 def render_sources(sources: list[dict]) -> None:
@@ -24,15 +22,10 @@ def render_sources(sources: list[dict]) -> None:
 
 def main() -> None:
     """Точка входа страницы Ask."""
-    st.set_page_config(
-        page_title='Ask — News Scraper',
-        page_icon='💬',
-        layout='wide',
-    )
+    st.set_page_config(page_title='Ask — News Scraper', page_icon='💬', layout='wide')
     st.title('💬 Ask')
     st.caption(
-        'Задайте вопрос — система найдёт релевантные статьи '
-        '(hybrid search: BM25 + vector) и сгенерирует ответ с цитатами.'
+        'Задайте вопрос — система найдёт релевантные статьи (hybrid search) и сгенерирует ответ с цитатами.'
     )
     render_sidebar()
 
@@ -43,10 +36,19 @@ def main() -> None:
             max_chars=500,
         )
         top_k = st.slider('Сколько статей подать в контекст', 1, 10, 5)
-        use_rerank = st.checkbox(
-            'Применить reranking (top-1 точнее, +2 сек)',
-            value=False,
-        )
+
+        col1, col2 = st.columns(2)
+        with col1:
+            use_rerank = st.checkbox(
+                'Применить reranking (top-1 точнее, +2 сек)',
+                value=False,
+            )
+        with col2:
+            use_streaming = st.checkbox(
+                'Печатать ответ в реальном времени (Streaming)',
+                value=True,
+            )
+
         submitted = st.form_submit_button('Спросить')
 
     if not submitted:
@@ -61,21 +63,29 @@ def main() -> None:
         st.warning('Введите вопрос.')
         return
 
-    with st.spinner('Ищу релевантные статьи и генерирую ответ... (~10 сек)'):
-        start = time.monotonic()
-        try:
-            result = ask_question(question, top_k=top_k, rerank=use_rerank)
-        except Exception as exc:
-            st.error(f'Ошибка: {exc}')
-            return
-        elapsed = time.monotonic() - start
-
     st.markdown('### Ответ')
-    st.markdown(result['answer'])
+
+    if use_streaming:
+        # Стриминговый режим
+        with st.spinner('Ищу и печатаю...'):
+            full_text = st.write_stream(stream_ask(question, top_k=top_k, rerank=use_rerank))
+
+        # Источники берём из session_state (их туда положил stream_ask)
+        sources = st.session_state.get('sources', [])
+    else:
+        # Обычный режим
+        with st.spinner('Ищу и генерирую ответ... (~10 сек)'):
+            try:
+                result = ask_question(question, top_k=top_k, rerank=use_rerank)
+            except Exception as exc:
+                st.error(f'Ошибка: {exc}')
+                return
+
+        st.markdown(result['answer'])
+        sources = result.get('sources', [])
 
     st.markdown('---')
-    render_sources(result.get('sources', []))
-    st.caption(f'⏱️ {elapsed:.2f}s')
+    render_sources(sources)
 
 
 if __name__ == '__main__':

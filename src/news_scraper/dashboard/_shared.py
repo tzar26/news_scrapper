@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from datetime import datetime
 
@@ -72,3 +73,34 @@ def ask_agent(question: str) -> dict:
         )
         response.raise_for_status()
         return response.json()
+
+
+def stream_ask(question: str, top_k: int = 5, rerank: bool = False):
+    """Генератор для st.write_stream.
+
+    Читает SSE от /ask/stream. Кусочки текста отдаёт в yield.
+    Источники сохраняет в st.session_state['sources'].
+    """
+    import streamlit as st
+
+    st.session_state['sources'] = []
+
+    payload = {'question': question, 'top_k': top_k, 'rerank': rerank}
+
+    with httpx.stream(
+        'POST', f'{API_BASE_URL}/ask/stream', json=payload, timeout=120.0
+    ) as response:
+        response.raise_for_status()
+        for line in response.iter_lines():
+            if not line.startswith('data: '):
+                continue
+
+            chunk = line[6:]  # убираем префикс 'data: '
+
+            if chunk.startswith('\\n\\n__SOURCES__'):
+                sources_json = chunk.replace('\\n\\n__SOURCES__', '')
+                st.session_state['sources'] = json.loads(sources_json)
+                break
+
+            # Возвращаем экранированные переносы строк обратно
+            yield chunk.replace('\\n', '\n')
