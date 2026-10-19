@@ -43,6 +43,10 @@ def main() -> None:
             max_chars=500,
         )
         top_k = st.slider('Сколько статей подать в контекст', 1, 10, 5)
+        use_rerank = st.checkbox(
+            'Применить reranking (top-1 точнее, +2 сек)',
+            value=False,
+        )
         submitted = st.form_submit_button('Спросить')
 
     if not submitted:
@@ -60,7 +64,7 @@ def main() -> None:
     with st.spinner('Ищу релевантные статьи и генерирую ответ... (~10 сек)'):
         start = time.monotonic()
         try:
-            result = ask_question(question, top_k=top_k)
+            result = ask_question(question, top_k=top_k, rerank=use_rerank)
         except Exception as exc:
             st.error(f'Ошибка: {exc}')
             return

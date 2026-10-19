@@ -27,14 +27,14 @@ def fetch_health() -> dict:
     return response.json()
 
 
-def ask_question(question: str, top_k: int = 5) -> dict:
+def ask_question(question: str, top_k: int = 5, rerank: bool = False) -> dict:
     """Отправляет вопрос в POST /ask. Не кэшируется — вопрос каждый раз новый.
-    Timeout 60 секунд — LLM генерирует ответ 5-15 сек.
+    Timeout 90 секунд — rerank медленнее.
     """
-    with httpx.Client(timeout=60.0) as client:
+    with httpx.Client(timeout=90.0) as client:
         response = client.post(
             f'{API_BASE_URL}/ask',
-            json={'question': question, 'top_k': top_k},
+            json={'question': question, 'top_k': top_k, 'rerank': rerank},
         )
         response.raise_for_status()
     return response.json()

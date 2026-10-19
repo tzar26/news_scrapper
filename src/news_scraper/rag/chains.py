@@ -16,7 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from news_scraper.infra.ollama_client import OllamaClient
 from news_scraper.infra.settings import settings
 from news_scraper.rag.prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE, format_context
-from news_scraper.rag.retriever import SearchResult, search
+from news_scraper.rag.retriever import SearchResult, search, search_with_rerank
 
 DEFAULT_MODEL = 'qwen2.5-coder:14b-16k'
 CITATION_PATTERN = re.compile(r'\[article_(\d+)\]')
@@ -76,6 +76,7 @@ async def answer_question(
     question: str,
     *,
     top_k: int = 5,
+    rerank: bool = False,
     model: str = DEFAULT_MODEL,
     client: OllamaClient | None = None,
 ) -> RAGAnswer:
@@ -87,6 +88,9 @@ async def answer_question(
         session: сессия БД.
         question: вопрос пользователя.
         top_k: сколько уникальных историй подать в контекст.
+        rerank: если True — применить cross-encoder reranking
+        (jina-reranker-v2). Улучшает top-1, но замедляет ответ
+        на 1-2 сек. По умолчанию False.
         model: имя модели в Ollama.
         client: OllamaClient для embed; если None — создаётся внутри.
 
@@ -99,7 +103,16 @@ async def answer_question(
         client = OllamaClient()
 
     try:
-        results = await search(session, question, top_k=top_k, client=client)
+        if rerank:
+            results = await search_with_rerank(
+                session,
+                question,
+                top_k=top_k,
+                candidates=30,
+                client=client,
+            )
+        else:
+            results = await search(session, question, top_k=top_k, client=client)
         if not results:
             return RAGAnswer(
                 answer='В базе нет информации по этому запросу.',

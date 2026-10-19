@@ -23,6 +23,7 @@ async def ask(
         session,
         request.question,
         top_k=request.top_k,
+        rerank=request.rerank,
     )
     sources = [SourceRefResponse(id=s.id, url=s.url, title=s.title) for s in result.sources]
     return AskResponse(answer=result.answer, sources=sources)

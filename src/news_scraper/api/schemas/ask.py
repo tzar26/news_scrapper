@@ -19,6 +19,10 @@ class AskRequest(BaseModel):
         le=20,
         description='Сколько уникальных историй подать в контекст',
     )
+    rerank: bool = Field(
+        default=False,
+        description='Применить cross-encoder reranking после retrieval',
+    )
 
 
 class SourceRefResponse(BaseModel):
