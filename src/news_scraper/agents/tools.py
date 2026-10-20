@@ -22,18 +22,22 @@ class SearchArticlesTool:
         """Выполняет поиск статей.
 
         Args:
-            args: dict с ключом 'query'.
-
-        Returns:
-            JSON-строка со списком статей (id, title, snippet).
-            Пустой список, если ничего не найдено.
+            args: dict с ключами 'query' (str) и опционально 'days_ago' (int).
         """
         query = args.get('query', '')
         if not query:
             return json.dumps({'error': 'query is empty'})
 
+        # Извлекаем days_ago, если агент его передал
         try:
-            results = await search(self._session, query, top_k=5)
+            days_ago = args.get('days_ago')
+            if days_ago is not None:
+                days_ago = int(days_ago)
+        except (ValueError, TypeError):
+            days_ago = None
+
+        try:
+            results = await search(self._session, query, top_k=5, days_ago=days_ago)
             return json.dumps(
                 [
                     {

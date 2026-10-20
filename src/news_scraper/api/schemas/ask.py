@@ -23,6 +23,12 @@ class AskRequest(BaseModel):
         default=False,
         description='Применить cross-encoder reranking после retrieval',
     )
+    days_ago: int | None = Field(
+        default=None,
+        ge=1,
+        le=30,
+        description='Искать статьи за последние N дней. Если None — за всё время.',
+    )
 
 
 class SourceRefResponse(BaseModel):

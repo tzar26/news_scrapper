@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from datetime import UTC, datetime, timedelta
+from typing import Any
 
 from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -55,6 +57,7 @@ async def _search_vector(
     country: Country | None,
     category: Category | None,
     client: OllamaClient,
+    days_ago: int | None = None,
 ) -> list[tuple[Article, float]]:
     """Векторный поиск. Возвращает [(Article, distance), ...] по distance ASC."""
     vec = await client.embed(query)
@@ -69,6 +72,9 @@ async def _search_vector(
         stmt = stmt.where(Article.country == country.value)
     if category is not None:
         stmt = stmt.where(Article.category == category.value)
+    if days_ago is not None:
+        cutoff = datetime.now(UTC) - timedelta(days=days_ago)
+        stmt = stmt.where(Article.published_at >= cutoff)
     result = await session.execute(stmt)
     return [(row[0], float(row[1])) for row in result.all()]
 
@@ -80,6 +86,7 @@ async def _search_bm25(
     top_n: int,
     country: Country | None,
     category: Category | None,
+    days_ago: int | None = None,
 ) -> list[tuple[Article, float]]:
     """BM25-поиск через PostgreSQL tsvector. Возвращает [(Article, rank), ...]."""
     lang = _detect_lang(query)
@@ -92,6 +99,9 @@ async def _search_bm25(
     if category is not None:
         where_extra += ' AND category = :category'
         params['category'] = category.value
+    if days_ago is not None:
+        where_extra += ' AND published_at >= :cutoff'
+        params['cutoff'] = datetime.now(UTC) - timedelta(days=days_ago)
 
     sql = text(
         f"""
@@ -158,6 +168,7 @@ async def search(
     country: Country | None = None,
     category: Category | None = None,
     client: OllamaClient | None = None,
+    days_ago: int | None = None,
 ) -> list[SearchResult]:
     """Hybrid-поиск: BM25 + vector + RRF + дедупликация по content_hash.
 
@@ -190,6 +201,7 @@ async def search(
             country=country,
             category=category,
             client=client,
+            days_ago=days_ago,
         )
         bm25_results = await _search_bm25(
             session,
@@ -197,6 +209,7 @@ async def search(
             top_n=top_n,
             country=country,
             category=category,
+            days_ago=days_ago,
         )
 
         fused = _rrf_fuse(vector_results, bm25_results)
@@ -237,7 +250,8 @@ async def search_with_rerank(
     country: Country | None = None,
     category: Category | None = None,
     client: OllamaClient | None = None,
-    reranker: any | None = None,
+    reranker: Any | None = None,
+    days_ago: int | None = None,
 ) -> list[SearchResult]:
     """Hybrid search + cross-encoder reranking.
 
@@ -264,6 +278,7 @@ async def search_with_rerank(
         country=country,
         category=category,
         client=client,
+        days_ago=days_ago,
     )
     if not results:
         return []

@@ -25,7 +25,12 @@ async def semantic_search(
     Возвращает top_k уникальных историй без вызова LLM.
     Быстрее /ask, потому что нет генерации.
     """
-    results = await search(session, request.query, top_k=request.top_k)
+    results = await search(
+        session,
+        request.query,
+        top_k=request.top_k,
+        days_ago=request.days_ago,
+    )
     return SearchResponse(
         query=request.query,
         results=[

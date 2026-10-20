@@ -28,14 +28,20 @@ def fetch_health() -> dict:
     return response.json()
 
 
-def ask_question(question: str, top_k: int = 5, rerank: bool = False) -> dict:
+def ask_question(
+    question: str,
+    top_k: int = 5,
+    rerank: bool = False,
+    days_ago: int | None = None,
+) -> dict:
     """Отправляет вопрос в POST /ask. Не кэшируется — вопрос каждый раз новый.
     Timeout 90 секунд — rerank медленнее.
     """
     with httpx.Client(timeout=90.0) as client:
+        payload = {'question': question, 'top_k': top_k, 'rerank': rerank, 'days_ago': days_ago}
         response = client.post(
             f'{API_BASE_URL}/ask',
-            json={'question': question, 'top_k': top_k, 'rerank': rerank},
+            json=payload,
         )
         response.raise_for_status()
     return response.json()
@@ -75,7 +81,12 @@ def ask_agent(question: str) -> dict:
         return response.json()
 
 
-def stream_ask(question: str, top_k: int = 5, rerank: bool = False):
+def stream_ask(
+    question: str,
+    top_k: int = 5,
+    rerank: bool = False,
+    days_ago: int | None = None,
+):
     """Генератор для st.write_stream.
 
     Читает SSE от /ask/stream. Кусочки текста отдаёт в yield.
@@ -83,7 +94,7 @@ def stream_ask(question: str, top_k: int = 5, rerank: bool = False):
     """
     st.session_state['sources'] = []
 
-    payload = {'question': question, 'top_k': top_k, 'rerank': rerank}
+    payload = {'question': question, 'top_k': top_k, 'rerank': rerank, 'days_ago': days_ago}
 
     with httpx.stream(
         'POST', f'{API_BASE_URL}/ask/stream', json=payload, timeout=120.0

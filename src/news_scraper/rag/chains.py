@@ -83,6 +83,7 @@ async def answer_question(
     rerank: bool = False,
     model: str = DEFAULT_MODEL,
     client: OllamaClient | None = None,
+    days_ago: int | None = None,
 ) -> RAGAnswer:
     """Отвечает на вопрос, опираясь на статьи из БД.
 
@@ -114,9 +115,16 @@ async def answer_question(
                 top_k=top_k,
                 candidates=30,
                 client=client,
+                days_ago=days_ago,
             )
         else:
-            results = await search(session, question, top_k=top_k, client=client)
+            results = await search(
+                session,
+                question,
+                top_k=top_k,
+                client=client,
+                days_ago=days_ago,
+            )
         if not results:
             return RAGAnswer(
                 answer='В базе нет информации по этому запросу.',
@@ -161,6 +169,7 @@ async def answer_question_stream(
     rerank: bool = False,
     model: str = DEFAULT_MODEL,
     client: OllamaClient | None = None,
+    days_ago: int | None = None,
 ) -> AsyncIterator[str]:
     """Стриминговый ответ на вопрос (SSE).
 
@@ -177,10 +186,21 @@ async def answer_question_stream(
     try:
         if rerank:
             results = await search_with_rerank(
-                session, question, top_k=top_k, candidates=30, client=client
+                session,
+                question,
+                top_k=top_k,
+                candidates=30,
+                client=client,
+                days_ago=days_ago,
             )
         else:
-            results = await search(session, question, top_k=top_k, client=client)
+            results = await search(
+                session,
+                question,
+                top_k=top_k,
+                client=client,
+                days_ago=days_ago,
+            )
 
         if not results:
             yield 'В базе нет информации по этому запросу.'

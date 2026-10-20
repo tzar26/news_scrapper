@@ -6,12 +6,12 @@ import streamlit as st
 from news_scraper.dashboard._shared import API_BASE_URL, render_sidebar
 
 
-def search_api(query: str, top_k: int) -> dict:
+def search_api(query: str, top_k: int, days_ago: int | None) -> dict:
     """POST /search. Без кэша — запрос каждый раз новый."""
     with httpx.Client(timeout=30.0) as client:
         response = client.post(
             f'{API_BASE_URL}/search',
-            json={'query': query, 'top_k': top_k},
+            json={'query': query, 'top_k': top_k, 'days_ago': days_ago},
         )
         response.raise_for_status()
         return response.json()
@@ -37,6 +37,9 @@ def main() -> None:
     )
     render_sidebar()
     with st.form('search_form'):
+        period_str = st.selectbox('Период', ['Всё время', 'За 1 день', 'За 3 дня', 'За 7 дней'])
+        days_ago_map = {'Всё время': None, 'За 1 день': 1, 'За 3 дня': 3, 'За 7 дней': 7}
+        days_ago = days_ago_map[period_str]
         query = st.text_input(
             'Поисковый запрос',
             placeholder='Например: ключевая ставка ЦБ',
@@ -52,7 +55,7 @@ def main() -> None:
             return
         with st.spinner('Ищу...'):
             try:
-                response = search_api(query, top_k)
+                response = search_api(query, top_k, days_ago)
             except Exception as exc:
                 st.error(f'Ошибка: {exc}')
                 return

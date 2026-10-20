@@ -19,6 +19,12 @@ class SearchRequest(BaseModel):
         le=50,
         description='Сколько уникальных историй вернуть',
     )
+    days_ago: int | None = Field(
+        default=None,
+        ge=1,
+        le=30,
+        description='Искать статьи за последние N дней. Если None — за всё время.',
+    )
 
 
 class RelatedArticleResponse(BaseModel):
