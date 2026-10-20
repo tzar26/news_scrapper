@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import httpx
 import streamlit as st
 
-from news_scraper.dashboard._shared import fetch_stats, format_date, render_sidebar
+from news_scraper.dashboard._shared import API_BASE_URL, fetch_stats, format_date, render_sidebar
 
 
 def render_overview(stats: dict) -> None:
@@ -64,6 +65,15 @@ def main() -> None:
         render_by_source(stats)
     st.markdown('---')
     render_by_category(stats)
+    try:
+        errors_resp = httpx.get(f'{API_BASE_URL}/health/source_errors', timeout=5.0)
+        errors = errors_resp.json() if errors_resp.status_code == 200 else []
+        if errors:
+            st.warning(f'⚠️ Ошибки при сборе новостей ({len(errors)}):')
+            for err in errors:
+                st.markdown(f'- **{err["source"]}**: `{err["error"]}`')
+    except Exception:
+        pass  # Если API недоступен, не ломаем главную страницу
 
 
 if __name__ == '__main__':

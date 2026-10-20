@@ -1,43 +1,32 @@
+"""Задачи Celery для сбора новостей."""
+
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 from dataclasses import dataclass
 
 from news_scraper.db.repositories import ArticleRepository
-from news_scraper.db.session import SessionLocal, engine
+from news_scraper.db.session import SessionLocal
+from news_scraper.infra.redis_client import _redis_client
 from news_scraper.scraper.sources.registry import ALL_SOURCES
 from news_scraper.tasks.celery_app import celery_app
 
 logger = logging.getLogger(__name__)
+
+ERRORS_KEY = 'scraper:last_errors'
 
 
 @dataclass
 class ScrapingResult:
     fetched: int
     inserted: int
-    failed_sources: list[str]
-
-
-async def _scrape_and_dispose() -> ScrapingResult:
-    """Обёртка для Celery: выполняет run_scraping и освобождает пул соединений.
-
-    Нужна потому, что Celery sync-задача вызывает asyncio.run(),
-    который создаёт новый event loop при каждом вызове. Соединения
-    из пула SQLAlchemy привязаны к loop'у и без dispose() «повисают»
-    на закрытом loop'е, ломая следующий запуск.
-    """
-    try:
-        return await run_scraping()
-    finally:
-        await engine.dispose()
+    failed_sources: list[dict]
 
 
 async def run_scraping() -> ScrapingResult:
-    """Проходит по всем источникам из реестра и сохраняет новые статьи.
-    Ошибки отдельных источников не прерывают общий процесс —
-    имя источника попадает в failed_sources.
-    """
+    """Проходит по всем источникам и сохраняет новые статьи."""
     total_fetched = 0
     total_inserted = 0
     failed = []
@@ -48,12 +37,18 @@ async def run_scraping() -> ScrapingResult:
             source = source_cls()
             try:
                 items = await source.fetch()
-            except Exception:
+            except Exception as exc:
                 logger.exception('source %s failed', source.name)
-                failed.append(source.name)
+                failed.append(
+                    {
+                        'source': source.name,
+                        'error': str(exc),
+                    }
+                )
                 continue
             finally:
                 await source.aclose()
+
             inserted = await repo.insert_many(items)
             total_fetched += len(items)
             total_inserted += inserted
@@ -63,6 +58,13 @@ async def run_scraping() -> ScrapingResult:
                 len(items),
                 inserted,
             )
+
+    # Сохраняем ошибки в Redis для отображения в UI
+    if failed:
+        _redis_client.set(ERRORS_KEY, json.dumps(failed, ensure_ascii=False))
+    else:
+        _redis_client.delete(ERRORS_KEY)
+
     return ScrapingResult(
         fetched=total_fetched,
         inserted=total_inserted,
@@ -73,12 +75,12 @@ async def run_scraping() -> ScrapingResult:
 @celery_app.task(name='news_scraper.tasks.scraping.scrape_all_sources')
 def scrape_all_sources() -> dict:
     """Celery-обёртка: синхронно запускает асинхронный run_scraping."""
-    result = asyncio.run(_scrape_and_dispose())
+    result = asyncio.run(run_scraping())
     logger.info(
-        'scraping done: fetched=%d inserted=%d failed=%s',
+        'scraping done: fetched=%d inserted=%d failed=%d',
         result.fetched,
         result.inserted,
-        result.failed_sources,
+        len(result.failed_sources),
     )
     return {
         'fetched': result.fetched,

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
@@ -15,6 +16,7 @@ from news_scraper.api.routes.ask import router as ask_router
 from news_scraper.api.routes.search import router as search_router
 from news_scraper.api.routes.stats import router as stats_router
 from news_scraper.infra.ollama_client import OllamaClient
+from news_scraper.infra.redis_client import _redis_client
 from news_scraper.infra.settings import settings
 
 logging.basicConfig(
@@ -81,6 +83,18 @@ app.include_router(agent_router)
 async def health() -> dict[str, str]:
     """Проверка работоспособности сервиса."""
     return {'status': 'ok'}
+
+
+@app.get('/health/source_errors', tags=['system'])
+async def source_errors() -> list[dict]:
+    """Возвращает список ошибок парсинга источников из Redis."""
+    errors_json = _redis_client.get('scraper:last_errors')
+    if not errors_json:
+        return []
+    try:
+        return json.loads(errors_json)
+    except Exception:
+        return []
 
 
 if __name__ == '__main__':

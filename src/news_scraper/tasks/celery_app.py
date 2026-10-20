@@ -28,9 +28,9 @@ celery_app.conf.update(
             'task': 'news_scraper.tasks.scraping.scrape_all_sources',
             'schedule': 3600.0,
         },
-        'enrich-batch-every-5-min': {
+        'enrich-batch-every-4-hours': {
             'task': 'news_scraper.tasks.enrichment.enrich_batch',
-            'schedule': 300.0,
+            'schedule': 14400.0,  # 4 часа
         },
     },
 )
