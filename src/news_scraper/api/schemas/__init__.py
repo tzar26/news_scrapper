@@ -14,6 +14,8 @@ from news_scraper.api.schemas.search import (
 from news_scraper.api.schemas.stats import CountItem, StatsResponse
 
 __all__ = [
+    'CountItem',
+    'StatsResponse',
     'ArticleDetailResponse',
     'ArticleResponse',
     'ArticlesPage',

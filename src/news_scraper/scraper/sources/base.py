@@ -28,3 +28,7 @@ class Source(Protocol):
         Returns:
             list[RawNewsItem]: List of raw news items.
         """
+
+    async def aclose(self) -> None:
+        """Закрывает ресурсы источника (HTTP-клиент и т.д.)."""
+        ...

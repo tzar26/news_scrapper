@@ -71,7 +71,15 @@ def parse_rss(
         if 'published_parsed' not in entry:
             continue
 
-        published_at = datetime(*entry.published_parsed[:6], tzinfo=UTC)
+        published_at = datetime(
+            entry.published_parsed[0],
+            entry.published_parsed[1],
+            entry.published_parsed[2],
+            entry.published_parsed[3],
+            entry.published_parsed[4],
+            entry.published_parsed[5],
+            tzinfo=UTC,
+        )
         url = entry.get('link')
         title = (entry.get('title') or '').strip()
         text = (entry.get('summary') or '').strip()

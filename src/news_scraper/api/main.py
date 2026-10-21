@@ -92,7 +92,7 @@ async def source_errors() -> list[dict]:
     if not errors_json:
         return []
     try:
-        return json.loads(errors_json)
+        return json.loads(str(errors_json))
     except Exception:
         return []
 

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+from typing import cast
+
 from sqlalchemy import func, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.engine import CursorResult
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from news_scraper.db.models import Article
@@ -44,7 +47,7 @@ class ArticleRepository:
         stmt = pg_insert(Article).values(rows).on_conflict_do_nothing()
         result = await self._session.execute(stmt)
         await self._session.commit()
-        return result.rowcount or 0
+        return cast(CursorResult, result).rowcount or 0
 
     async def get_by_id(self, article_id: int) -> Article | None:
         """

@@ -66,9 +66,7 @@ def main() -> None:
     if use_streaming:
         # Стриминговый режим
         with st.spinner('Ищу и печатаю...'):
-            full_text = st.write_stream(
-                stream_ask(question, top_k=top_k, rerank=use_rerank, days_ago=days_ago)
-            )
+            st.write_stream(stream_ask(question, top_k=top_k, rerank=use_rerank, days_ago=days_ago))
 
         # Источники берём из session_state (их туда положил stream_ask)
         sources = st.session_state.get('sources', [])

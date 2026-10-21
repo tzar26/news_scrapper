@@ -75,4 +75,14 @@ select = [
 ]
 ignore = [
     "E501",  # line too long — отдаём форматтеру, не линтеру
+    "B008",  # FastAPI Depends/Query in defaults (false positive)
+    "B905",  # zip() without strict (safe for our use cases)
 ]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_untyped_defs = false
+warn_return_any = false
+plugins = ["pydantic.mypy"]

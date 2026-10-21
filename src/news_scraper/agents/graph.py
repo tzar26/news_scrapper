@@ -9,6 +9,7 @@ from collections.abc import AsyncIterator
 from typing import Any, Literal
 
 import ollama
+from langchain_core.runnables import RunnableConfig
 from langfuse.langchain import CallbackHandler
 from langgraph.graph import END, START, StateGraph
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -157,6 +158,8 @@ async def _execute_tools(
     for call in tool_calls:
         fn = call.get('function') or {}
         name = fn.get('name')
+        if not isinstance(name, str):
+            continue
         raw_args = fn.get('arguments') or {}
         if isinstance(raw_args, str):
             try:
@@ -248,7 +251,7 @@ async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
     }
 
     langfuse_handler = CallbackHandler()
-    config = {'callbacks': [langfuse_handler]}
+    config: RunnableConfig = {'callbacks': [langfuse_handler]}
 
     result = await app.ainvoke(initial, config=config)
     final = result.get('final_answer') or 'Не удалось сформировать ответ.'
@@ -315,7 +318,7 @@ async def run_agent_stream(
                 yield 'data: {"type": "status", "content": "🔍 Ищу статьи в базе..."}\n\n'
 
             if kind == 'on_chain_end' and event.get('name') == 'planner':
-                output = event['data'].get('output', {})
+                output: dict[str, Any] = event['data'].get('output', {})
                 if output.get('final_answer'):
                     final_text = output['final_answer']
                     yield 'data: {"type": "status", "content": "✍️ Формирую ответ..."}\n\n'
