@@ -58,6 +58,10 @@
 - ✅ RBC
 - ✅ Interfax
 - ✅ Prime
+- ✅ SmartLab
+- ✅ InvestFuture
+- ✅ Vedomosti
+- ✅ CBRF (Банк России)
 
 ### США
 - ✅ NPR
