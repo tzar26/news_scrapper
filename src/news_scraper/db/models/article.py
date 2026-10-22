@@ -17,8 +17,9 @@ class Article(Base):
     ловит дубли с разными URL.
     content_hash — grouping key для перепечаток (не UNIQUE),
     embedding — вектор bge-m3 (1024d).
-    category_raw — сырое значение из RSS для отладки маппинга, а category — результат
-    маппинга через _CATEGORY_MAP.
+    category_raw — исходное сырое значение из RSS (для отладки).
+    category_predicted — категория, предсказанная LLM (заполняется асинхронно).
+    category — результат маппинга через _CATEGORY_MAP.
     """
 
     __tablename__ = 'articles'
@@ -31,6 +32,11 @@ class Article(Base):
     category_raw: Mapped[str | None] = mapped_column(
         String(128),
         nullable=True,
+    )
+    category_predicted: Mapped[str | None] = mapped_column(
+        String(32),
+        nullable=True,
+        index=True,
     )
     category: Mapped[str] = mapped_column(String(32), index=True)
     published_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)

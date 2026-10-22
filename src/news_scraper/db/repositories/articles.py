@@ -173,3 +173,21 @@ class ArticleRepository:
         if article:
             article.embedding = embedding
             await self._session.commit()
+
+    async def get_without_category(self, limit: int = 50) -> list[Article]:
+        """Возвращает статьи без предсказанной категории."""
+        stmt = (
+            select(Article)
+            .where(Article.category_predicted.is_(None))
+            .order_by(Article.published_at.desc())
+            .limit(limit)
+        )
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
+
+    async def set_predicted_category(self, article_id: int, category: str) -> None:
+        """Сохраняет предсказанную категорию для статьи."""
+        article = await self._session.get(Article, article_id)
+        if article:
+            article.category_predicted = category
+            await self._session.commit()
