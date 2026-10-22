@@ -17,5 +17,82 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7-alpine
+    container_name: news_redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  api:
+    build: .
+    container_name: news_api
+    restart: unless-stopped
+    ports:
+      - '8000:8000'
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://news:news@postgres:5432/pet_news
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - OLLAMA_BASE_URL=http://192.168.0.118:11434 # IP local Ollama-server
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY}
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY}
+      - LANGFUSE_HOST=http://host.docker.internal:3000 # from container into Langfuse on host
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head && uvicorn news_scraper.api.main:app --host 0.0.0.0 --port 8000"
+
+  worker:
+    build: .
+    container_name: news_worker
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://news:news@postgres:5432/pet_news
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+      - OLLAMA_BASE_URL=http://192.168.0.118:11434
+    depends_on:
+      - api
+    command: celery -A news_scraper.tasks.celery_app:celery_app worker --loglevel=info
+
+  beat:
+    build: .
+    container_name: news_beat
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://news:news@postgres:5432/pet_news
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/1
+      - CELERY_RESULT_BACKEND=redis://redis:6379/2
+    depends_on:
+      - worker
+    command: celery -A news_scraper.tasks.celery_app:celery_app beat --loglevel=info
+
+  dashboard:
+    build: .
+    container_name: news_dashboard
+    restart: unless-stopped
+    ports:
+      - '8501:8501'
+    environment:
+      - API_BASE_URL=http://api:8000 # Стримлит стучится к API по имени сервиса
+    depends_on:
+      - api
+    command: streamlit run src/news_scraper/dashboard/app.py --server.port 8501 --server.address 0.0.0.0
+
 volumes:
   postgres_data:
+  redis_data:
