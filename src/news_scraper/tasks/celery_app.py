@@ -8,7 +8,11 @@ celery_app = Celery(
     'news_scraper',
     broker=settings.celery_broker_url,
     backend=settings.celery_result_backend,
-    include=['news_scraper.tasks.scraping', 'news_scraper.tasks.enrichment'],
+    include=[
+        'news_scraper.tasks.scraping',
+        'news_scraper.tasks.enrichment',
+        'news_scraper.tasks.classification',
+    ],
 )
 
 celery_app.conf.update(
@@ -31,6 +35,10 @@ celery_app.conf.update(
         'enrich-batch-every-4-hours': {
             'task': 'news_scraper.tasks.enrichment.enrich_batch',
             'schedule': 14400.0,  # 4 часа
+        },
+        'classify-batch-every-6-hours': {
+            'task': 'news_scraper.tasks.classification.classify_batch',
+            'schedule': 21600.0,  # 6 часов
         },
     },
 )
