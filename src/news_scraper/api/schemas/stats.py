@@ -27,3 +27,5 @@ class StatsResponse(BaseModel):
         default=None,
         description='Самая старая дата публикации',
     )
+    classified: int = Field(description='Количество статей с предсказанной категорией')
+    pending: int = Field(description='Количество статей без предсказанной категории')

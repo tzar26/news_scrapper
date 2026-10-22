@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import re
@@ -15,7 +16,7 @@ from langgraph.graph import END, START, StateGraph
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from news_scraper.agents.state import AgentState
-from news_scraper.agents.tools import make_search_tool
+from news_scraper.agents.tools import make_metrics_tool, make_search_tool
 from news_scraper.infra.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -33,6 +34,8 @@ PLANNER_PROMPT = """Ты — аналитик новостей. Твоя зад�
 3. Если информации достаточно — сформируй финальный ответ.
 4. Финальный ответ должен опираться на факты из статей и содержать ссылки [article_N].
 5. Если поиск не дал результатов, скажи об этом честно.
+6. Для получения статистики (сколько статей, какие категории) используй инструмент get_metrics.
+7. Инструмент get_metrics возвращает текстовую статистику. Используй её, чтобы ответить на вопрос пользователя.
 
 Не выдумывай. Опирайся только на найденные статьи."""
 
@@ -45,7 +48,7 @@ def _tools_to_schema(tools: list) -> list[dict]:
             {
                 'type': 'function',
                 'function': {
-                    'name': t.name,
+                    'name': getattr(t, 'name', 'unknown'),
                     'description': t.description or '',
                     'parameters': {
                         'type': 'object',
@@ -57,6 +60,10 @@ def _tools_to_schema(tools: list) -> list[dict]:
                             'days_ago': {
                                 'type': 'integer',
                                 'description': 'Искать статьи за последние N дней (опционально)',
+                            },
+                            'group_by': {
+                                'type': 'string',
+                                'description': 'Для get_metrics: category, country, source',
                             },
                         },
                         'required': ['query'],
@@ -182,7 +189,7 @@ async def _execute_tools(
         try:
             out = await tool.invoke(args)
         except Exception as exc:
-            logger.exception('tool %s failed', name)
+            logger.exception('Tool %s failed with args=%r', name, args)
             out = json.dumps({'error': str(exc)})
 
         results.append(
@@ -216,8 +223,8 @@ def _should_continue(state: AgentState) -> Literal['tools', 'finalize']:
 
 async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
     """Запускает агента и возвращает финальный ответ."""
-    tools = [make_search_tool(session)]
-    tools_map = {t.name: t for t in tools}
+    tools = [make_search_tool(session), make_metrics_tool(session)]
+    tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
     async def planner_node(state: AgentState) -> dict[str, Any]:
         return await _call_planner(state, tools)
@@ -269,13 +276,11 @@ async def run_agent_stream(
 ) -> AsyncIterator[str]:
     """Стриминговый запуск агента.
 
-    Выдаёт SSE-форматированные строки:
-    - data: {"type": "status", "content": "..."} — статусы шагов.
-    - data: {"type": "token", "content": "..."} — токены финального ответа.
-    - data: {"type": "end"} — завершение.
+    Выдаёт SSE-форматированные строки.
+    Использует stream_mode="values" для надёжного перехвата состояний.
     """
-    tools = [make_search_tool(session)]
-    tools_map = {t.name: t for t in tools}
+    tools = [make_search_tool(session), make_metrics_tool(session)]
+    tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
     async def planner_node(state: AgentState) -> dict[str, Any]:
         return await _call_planner(state, tools)
@@ -310,31 +315,39 @@ async def run_agent_stream(
 
     yield 'data: {"type": "status", "content": "🤔 Агент планирует запрос..."}\n\n'
 
+    langfuse_handler = CallbackHandler()
+    config: RunnableConfig = {'callbacks': [langfuse_handler]}
+
     try:
-        async for event in app.astream_events(initial, version='v2'):
-            kind = event['event']
+        # Используем stream_mode="values" — на каждом шаге отдаётся полный State
+        async for state in app.astream(initial, config=config, stream_mode='values'):
+            messages = state.get('messages', [])
+            if not messages:
+                continue
 
-            if kind == 'on_chain_start' and event.get('name') == 'tools':
-                yield 'data: {"type": "status", "content": "🔍 Ищу статьи в базе..."}\n\n'
+            last_msg = messages[-1]
 
-            if kind == 'on_chain_end' and event.get('name') == 'planner':
-                output: dict[str, Any] = event['data'].get('output', {})
-                if output.get('final_answer'):
-                    final_text = output['final_answer']
-                    yield 'data: {"type": "status", "content": "✍️ Формирую ответ..."}\n\n'
+            # Если последнее сообщение — это вызов инструмента
+            if last_msg.get('tool_calls'):
+                for tc in last_msg['tool_calls']:
+                    tool_name = tc['function']['name']
+                    yield f'data: {{"type": "status", "content": "🔍 Вызываю инструмент {tool_name}..."}}\n\n'
 
-                    import asyncio
+            # Если появился финальный ответ
+            final_answer = state.get('final_answer')
+            if final_answer:
+                yield 'data: {"type": "status", "content": "✍️ Формирую ответ..."}\n\n'
 
-                    words = final_text.split(' ')
-                    for i, word in enumerate(words):
-                        chunk = word + (' ' if i < len(words) - 1 else '')
-                        payload = json.dumps({'type': 'token', 'content': chunk})
-                        yield f'data: {payload}\n\n'
-                        await asyncio.sleep(0.04)  # Небольшая пауза для эффекта печатной машинки
+                # Эмуляция стриминга по словам
+                words = final_answer.split(' ')
+                for i, word in enumerate(words):
+                    chunk = word + (' ' if i < len(words) - 1 else '')
+                    payload = json.dumps({'type': 'token', 'content': chunk})
+                    yield f'data: {payload}\n\n'
+                    await asyncio.sleep(0.03)
 
-                    # Безопасно завершаем без запроса несуществующих полей
-                    yield 'data: {"type": "end"}\n\n'
-                    return
+                yield 'data: {"type": "end"}\n\n'
+                return
 
     except Exception as exc:
         logger.exception('Error during agent streaming')

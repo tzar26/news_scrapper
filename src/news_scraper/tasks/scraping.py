@@ -8,7 +8,7 @@ import logging
 from dataclasses import dataclass
 
 from news_scraper.db.repositories import ArticleRepository
-from news_scraper.db.session import SessionLocal
+from news_scraper.db.session import SessionLocal, engine
 from news_scraper.infra.redis_client import _redis_client
 from news_scraper.scraper.sources.registry import ALL_SOURCES
 from news_scraper.tasks.celery_app import celery_app
@@ -31,45 +31,48 @@ async def run_scraping() -> ScrapingResult:
     total_inserted = 0
     failed = []
 
-    async with SessionLocal() as session:
-        repo = ArticleRepository(session)
-        for source_cls in ALL_SOURCES:
-            source = source_cls()
-            try:
-                items = await source.fetch()
-            except Exception as exc:
-                logger.exception('source %s failed', source.name)
-                failed.append(
-                    {
-                        'source': source.name,
-                        'error': str(exc),
-                    }
+    try:
+        async with SessionLocal() as session:
+            repo = ArticleRepository(session)
+            for source_cls in ALL_SOURCES:
+                source = source_cls()
+                try:
+                    items = await source.fetch()
+                except Exception as exc:
+                    logger.exception('source %s failed', source.name)
+                    failed.append(
+                        {
+                            'source': source.name,
+                            'error': str(exc),
+                        }
+                    )
+                    continue
+                finally:
+                    await source.aclose()
+
+                inserted = await repo.insert_many(items)
+                total_fetched += len(items)
+                total_inserted += inserted
+                logger.info(
+                    'source=%s fetched=%d inserted=%d',
+                    source.name,
+                    len(items),
+                    inserted,
                 )
-                continue
-            finally:
-                await source.aclose()
 
-            inserted = await repo.insert_many(items)
-            total_fetched += len(items)
-            total_inserted += inserted
-            logger.info(
-                'source=%s fetched=%d inserted=%d',
-                source.name,
-                len(items),
-                inserted,
-            )
+        # Сохраняем ошибки в Redis для отображения в UI
+        if failed:
+            _redis_client.set(ERRORS_KEY, json.dumps(failed, ensure_ascii=False))
+        else:
+            _redis_client.delete(ERRORS_KEY)
 
-    # Сохраняем ошибки в Redis для отображения в UI
-    if failed:
-        _redis_client.set(ERRORS_KEY, json.dumps(failed, ensure_ascii=False))
-    else:
-        _redis_client.delete(ERRORS_KEY)
-
-    return ScrapingResult(
-        fetched=total_fetched,
-        inserted=total_inserted,
-        failed_sources=failed,
-    )
+        return ScrapingResult(
+            fetched=total_fetched,
+            inserted=total_inserted,
+            failed_sources=failed,
+        )
+    finally:
+        await engine.dispose()
 
 
 @celery_app.task(name='news_scraper.tasks.scraping.scrape_all_sources')

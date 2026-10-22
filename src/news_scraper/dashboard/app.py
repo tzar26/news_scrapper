@@ -9,10 +9,11 @@ from news_scraper.dashboard._shared import API_BASE_URL, fetch_stats, format_dat
 def render_overview(stats: dict) -> None:
     """Обзор: metric cards + диапазон дат."""
     st.subheader('Обзор')
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     col1.metric('Всего статей', stats['total_articles'])
     col2.metric('Источников', len(stats['by_source']))
-    col3.metric('Стран', len(stats['by_country']))
+    col3.metric('Классифицировано', stats['classified'])
+    col4.metric('В очереди', stats['pending'])
     earliest = stats.get('earliest_published_at')
     latest = stats.get('latest_published_at')
     if earliest and latest:
@@ -37,9 +38,9 @@ def render_by_category(stats: dict) -> None:
     """Bar chart по категориям."""
     st.subheader('По категориям')
     st.caption(
-        'Категория берётся из RSS-фида. Большинство источников '
-        'её не передают — отсюда преобладание "other". '
-        'Автоматическая классификация через LLM запланирована.'
+        'Категории предсказаны локальной LLM (Qwen 2.5). '
+        'Столбец "unclassified" — статьи, ожидающие обработки. '
+        'Классификация идёт в фоновом режиме.'
     )
     data = {item['key']: item['count'] for item in stats['by_category']}
     st.bar_chart(data)

@@ -18,7 +18,11 @@ async def get_stats(
     by_country = [CountItem(key=row['country'], count=row['count']) for row in data['by_country']]
     by_source = [CountItem(key=row['source'], count=row['count']) for row in data['by_source']]
     by_category = [
-        CountItem(key=row['category'], count=row['count']) for row in data['by_category']
+        CountItem(
+            key=str(row['category']) if row['category'] is not None else 'unclassified',
+            count=row['count'],
+        )
+        for row in data['by_category']
     ]
     return StatsResponse(
         total_articles=data['total'],
@@ -27,4 +31,6 @@ async def get_stats(
         by_category=by_category,
         latest_published_at=data['latest_published_at'],
         earliest_published_at=data['earliest_published_at'],
+        classified=data['classified'],
+        pending=data['pending'],
     )

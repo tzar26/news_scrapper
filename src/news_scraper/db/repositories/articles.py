@@ -128,11 +128,13 @@ class ArticleRepository:
         by_source = [{'source': row.source, 'count': row.count} for row in source_rows]
 
         category_rows = await self._session.execute(
-            select(Article.category, func.count().label('count'))
-            .group_by(Article.category)
+            select(Article.category_predicted, func.count().label('count'))
+            .group_by(Article.category_predicted)
             .order_by(func.count().desc())
         )
-        by_category = [{'category': row.category, 'count': row.count} for row in category_rows]
+        by_category = [
+            {'category': row.category_predicted, 'count': row.count} for row in category_rows
+        ]
 
         date_row = await self._session.execute(
             select(
@@ -142,6 +144,13 @@ class ArticleRepository:
         )
         dates = date_row.one()
 
+        classified = await self._session.scalar(
+            select(func.count()).select_from(Article).where(Article.category_predicted.is_not(None))
+        )
+        pending = await self._session.scalar(
+            select(func.count()).select_from(Article).where(Article.category_predicted.is_(None))
+        )
+
         return {
             'total': total or 0,
             'by_country': by_country,
@@ -149,6 +158,8 @@ class ArticleRepository:
             'by_category': by_category,
             'latest_published_at': dates.latest,
             'earliest_published_at': dates.earliest,
+            'classified': classified or 0,
+            'pending': pending or 0,
         }
 
     async def get_without_embedding(self, limit: int = 50) -> list[Article]:
