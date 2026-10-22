@@ -60,7 +60,7 @@ graph TD
 ### Предварительные требования
 - Python 3.12
 - Docker и Docker Compose
-- Ollama (запущенная локально или на удаленном сервере)
+- Запущенный сервер Ollama (локально или удаленно) с моделями `qwen2.5-coder:14b-16k` и `bge-m3`.
 
 ### 1. Клонирование и установка
 ```bash
@@ -71,22 +71,31 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-### 2. Запуск инфраструктуры
-```bash
-# Запускает PostgreSQL (с pgvector) и Redis
-docker compose up -d postgres redis
-```
-
-### 3. Настройка окружения
+### 2. Настройка окружения
 Создайте .env файл на основе .env.example:
 
-`` `bash env
+```bash env
 DATABASE_URL=postgresql+asyncpg://news:news@localhost:5434/pet_news
 REDIS_URL=redis://localhost:6379/0
 OLLAMA_BASE_URL=http://localhost:11434 # или ваш IP
 LANGFUSE_PUBLIC_KEY=pk-lf-...
 LANGFUSE_SECRET_KEY=sk-lf-...
 LANGFUSE_HOST=http://localhost:3000
+```
+
+### 3. Запуск инфраструктуры
+```bash
+# Запускает PostgreSQL (с pgvector) и Redis
+docker compose up -d postgres redis
+```
+
+Можно запустить всё в контейнере и использовать (пропускаем 4-6)
+```bash
+docker compose up -d
+```
+Останов в случае контейнерного запуска
+```bash
+docker compose down
 ```
 
 ### 4. Миграции БД
@@ -111,6 +120,12 @@ streamlit run src/news_scraper/dashboard/app.py
 # Терминал 3: Celery Worker (для фонового сбора и эмбеддингов)
 celery -A news_scraper.tasks.celery_app:celery_app worker --loglevel=info
 ```
+
+### Доступ к интерфейсам
+
+Streamlit Dashboard: http://localhost:8501
+FastAPI Swagger UI: http://localhost:8000/docs
+Langfuse UI: http://localhost:3000 (если запущен)
 
 ## Текущий статус и метрики
 
