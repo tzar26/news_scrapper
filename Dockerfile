@@ -12,16 +12,18 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
-# Копируем только файлы, необходимые для установки зависимостей, чтобы использовать кэш Docker
 COPY pyproject.toml ./
-COPY src/ ./src/
-COPY alembic.ini ./
-COPY tests/ ./tests/
 
-# Устанавливаем зависимости. Поскольку исходников еще нет, pip установит только пакеты.
-# Используем --no-cache-dir для уменьшения размера образа.
+# Создаем пустую папку, чтобы pip install -e . не упал
+RUN mkdir -p src/news_scraper
+
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -e ".[dev]"
+
+    COPY src/ ./src/
+
+COPY alembic.ini ./
+COPY tests/ ./tests/
 
 # Указываем переменную окружения для Python, чтобы он видел наш пакет
 ENV PYTHONPATH=/app/src
