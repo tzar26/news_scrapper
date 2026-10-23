@@ -202,3 +202,23 @@ class ArticleRepository:
         if article:
             article.category_predicted = category
             await self._session.commit()
+
+    async def get_without_extraction(self, limit: int = 50) -> list[Article]:
+        """Возвращает статьи без извлеченных сущностей и тональности."""
+        stmt = (
+            select(Article)
+            .where(Article.sentiment.is_(None))  # Ищем те, где не заполнена тональность
+            .order_by(Article.published_at.desc())
+            .limit(limit)
+        )
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
+
+    async def set_extraction(self, article_id: int, sentiment: str, entities: list[dict]) -> None:
+        """Сохраняет тональность и сущности для статьи."""
+        article = await self._session.get(Article, article_id)
+        if not article:
+            return
+        article.sentiment = sentiment
+        article.entities = entities
+        await self._session.commit()
