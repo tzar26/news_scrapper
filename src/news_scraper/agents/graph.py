@@ -16,7 +16,7 @@ from langgraph.graph import END, START, StateGraph
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from news_scraper.agents.state import AgentState
-from news_scraper.agents.tools import make_metrics_tool, make_search_tool
+from news_scraper.agents.tools import make_entity_tool, make_metrics_tool, make_search_tool
 from news_scraper.infra.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -36,6 +36,7 @@ PLANNER_PROMPT = """Ты — аналитик новостей. Твоя зад�
 5. Если поиск не дал результатов, скажи об этом честно.
 6. Для получения статистики (сколько статей, какие категории) используй инструмент get_metrics.
 7. Инструмент get_metrics возвращает текстовую статистику. Используй её, чтобы ответить на вопрос пользователя.
+8. Для поиска новостей про конкретную компанию или персону используй search_by_entity (можно указать sentiment: positive/negative/neutral).
 
 Не выдумывай. Опирайся только на найденные статьи."""
 
@@ -64,6 +65,14 @@ def _tools_to_schema(tools: list) -> list[dict]:
                             'group_by': {
                                 'type': 'string',
                                 'description': 'Для get_metrics: category, country, source',
+                            },
+                            'entity': {
+                                'type': 'string',
+                                'description': 'Название компании, персоны или страны (для search_by_entity)',
+                            },
+                            'sentiment': {
+                                'type': 'string',
+                                'description': 'Тональность: positive, negative или neutral (для search_by_entity)',
                             },
                         },
                         'required': ['query'],
@@ -223,7 +232,7 @@ def _should_continue(state: AgentState) -> Literal['tools', 'finalize']:
 
 async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
     """Запускает агента и возвращает финальный ответ."""
-    tools = [make_search_tool(session), make_metrics_tool(session)]
+    tools = [make_search_tool(session), make_metrics_tool(session), make_entity_tool(session)]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
     async def planner_node(state: AgentState) -> dict[str, Any]:
@@ -279,7 +288,7 @@ async def run_agent_stream(
     Выдаёт SSE-форматированные строки.
     Использует stream_mode="values" для надёжного перехвата состояний.
     """
-    tools = [make_search_tool(session), make_metrics_tool(session)]
+    tools = [make_search_tool(session), make_metrics_tool(session), make_entity_tool(session)]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
     async def planner_node(state: AgentState) -> dict[str, Any]:
@@ -330,8 +339,39 @@ async def run_agent_stream(
             # Если последнее сообщение — это вызов инструмента
             if last_msg.get('tool_calls'):
                 for tc in last_msg['tool_calls']:
-                    tool_name = tc['function']['name']
-                    yield f'data: {{"type": "status", "content": "🔍 Вызываю инструмент {tool_name}..."}}\n\n'
+                    tool_name = tc['function'].get('name', 'unknown')
+                    raw_args = tc['function'].get('arguments', {})
+
+                    parsed_args: dict[str, Any] = {}
+                    if isinstance(raw_args, str):
+                        try:
+                            parsed_args = json.loads(raw_args)
+                        except Exception:
+                            parsed_args = {}
+                    elif isinstance(raw_args, dict):
+                        parsed_args = raw_args
+
+                    # Формируем красивую подпись в зависимости от инструмента
+                    try:
+                        if tool_name == 'search_articles':
+                            query = parsed_args.get('query', '')
+                            status_msg = f'🔍 Ищу статьи по запросу: «{query}»'
+                        elif tool_name == 'search_by_entity':
+                            entity = parsed_args.get('entity', '')
+                            sentiment = parsed_args.get('sentiment')
+                            sent_str = f' (тональность: {sentiment})' if sentiment else ''
+                            status_msg = f'🏢 Ищу новости про: «{entity}»{sent_str}'
+                        elif tool_name == 'get_metrics':
+                            group_by = parsed_args.get('group_by', 'category')
+                            days = parsed_args.get('days_ago')
+                            days_str = f' за последние {days} дн.' if days else ''
+                            status_msg = f'📊 Считаю статистику по «{group_by}»{days_str}'
+                        else:
+                            status_msg = f'🛠️ Вызываю {tool_name}...'
+                    except Exception:
+                        status_msg = f'🛠️ Вызываю {tool_name}...'
+
+                    yield f'data: {json.dumps({"type": "status", "content": status_msg}, ensure_ascii=False)}\n\n'
 
             # Если появился финальный ответ
             final_answer = state.get('final_answer')

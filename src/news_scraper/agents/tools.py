@@ -131,3 +131,62 @@ class GetMetricsTool:
 def make_metrics_tool(session: AsyncSession) -> GetMetricsTool:
     """Создаёт инструмент метрик, привязанный к сессии БД."""
     return GetMetricsTool(session)
+
+
+class SearchByEntityTool:
+    """Инструмент для поиска статей по упомянутой сущности и тональности."""
+
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+        self.name = 'search_by_entity'
+        self.description = (
+            'Ищет статьи, в которых упоминается конкретная компания, персона или страна. '
+            'Можно фильтровать по тональности (positive, negative, neutral).'
+        )
+
+    async def invoke(self, args: dict[str, Any]) -> str:
+        """Выполняет поиск по сущности.
+
+        Args:
+            args: dict с ключами:
+                - entity (str): Название компании, персоны или страны.
+                - sentiment (str, optional): 'positive', 'negative', 'neutral'.
+        """
+        from sqlalchemy import select
+
+        from news_scraper.db.models import Article
+
+        entity = args.get('entity')
+        sentiment = args.get('sentiment')
+
+        if not isinstance(entity, str) or not entity.strip():
+            return 'Ошибка: для поиска по сущности необходимо передать название в поле entity.'
+
+        # Ищем в JSONB-поле entities.
+        # Используем оператор @> для поиска вхождения словаря {"text": entity}
+        # (Регистрозависимый поиск. Если нужно регистронезависимо, можно перевести в lower, но
+        # в JSONB это сложнее, поэтому пока так).
+        stmt = select(Article).where(Article.entities.contains([{'text': entity}]))
+
+        if sentiment is not None and isinstance(sentiment, str):
+            stmt = stmt.where(Article.sentiment == sentiment.lower())
+
+        stmt = stmt.order_by(Article.published_at.desc()).limit(5)
+
+        result = await self._session.execute(stmt)
+        articles = result.scalars().all()
+
+        if not articles:
+            return f'Статей с упоминанием "{entity}" не найдено.'
+
+        lines = [f'Найдено {len(articles)} статей с упоминанием "{entity}":']
+        for art in articles:
+            sent_str = art.sentiment or 'unknown'
+            lines.append(f'- [{art.id}] {art.title[:60]}... (Тональность: {sent_str})')
+
+        return '\n'.join(lines)
+
+
+def make_entity_tool(session: AsyncSession) -> SearchByEntityTool:
+    """Создаёт инструмент поиска по сущностям."""
+    return SearchByEntityTool(session)

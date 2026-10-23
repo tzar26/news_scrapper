@@ -12,6 +12,7 @@ celery_app = Celery(
         'news_scraper.tasks.scraping',
         'news_scraper.tasks.enrichment',
         'news_scraper.tasks.classification',
+        'news_scraper.tasks.extraction',
     ],
 )
 
@@ -38,6 +39,10 @@ celery_app.conf.update(
         },
         'classify-batch-every-6-hours': {
             'task': 'news_scraper.tasks.classification.classify_batch',
+            'schedule': 21600.0,  # 6 часов
+        },
+        'extract-batch-every-6-hours': {
+            'task': 'news_scraper.tasks.extraction.extract_batch',
             'schedule': 21600.0,  # 6 часов
         },
     },

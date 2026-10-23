@@ -20,6 +20,7 @@ class Sentiment(StrEnum):
     POSITIVE = 'positive'
     NEUTRAL = 'neutral'
     NEGATIVE = 'negative'
+    UNKNOWN = 'unknown'
 
 
 class Category(StrEnum):
