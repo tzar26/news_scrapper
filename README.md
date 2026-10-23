@@ -26,37 +26,7 @@
 - **Observability**: Langfuse (self-hosted)
 - **Инфраструктура**: Docker Compose, GitHub Actions (CI)
 
-## Архитектура проекта
-
-Проект следует принципу **изоляции доменной логики от внешних фреймворков**. Это позволяет легко менять БД, LLM или фреймворк без переписывания бизнес-логики.
-
-```mermaid
-graph TD
-    RSS[RSS Источники 14 шт.] -->|httpx, Celery| Scraper[Скрапер]
-    Scraper -->|Pydantic| DB[(PostgreSQL + pgvector)]
-
-    DB -->|Hybrid Search: BM25 + Vector| Retriever[Retriever]
-    Retriever -->|Топ-K статей| RAG[RAG Pipeline]
-    Retriever -->|Инструмент поиска| Agent[LangGraph Агент]
-
-    RAG -->|Ollama SDK| Qwen[Qwen 2.5 Local]
-    Agent -->|LangGraph State Machine| Qwen
-
-    Qwen -->|Streaming / Ответ| API[FastAPI]
-    API -->|REST / SSE| UI[Streamlit Dashboard]
-
-    API -.->|Трейсинг| Langfuse[Langfuse]
-```
-
-Слои приложения:
-
-- **domain/** — Чистая логика, Pydantic-модели, Enum'ы. Не зависит ни от чего.
-- **db/** — SQLAlchemy ORM, миграции (Alembic), репозитории.
-- **scraper/** — Источники (RSS), парсеры, дедупликация.
-- **rag/** — Поиск (hybrid), промпты, стриминг.
-- **agents/** — LangGraph (State, Tools, Graph).
-- **api/** — FastAPI роуты (REST + SSE).
-- **dashboard/** — Streamlit UI (4 страницы: Overview, Search, Ask, Agent).
+## [Архитектура проекта](docs/architecture.md)
 
 ## Как запустить локально
 
