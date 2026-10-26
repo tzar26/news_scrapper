@@ -47,4 +47,11 @@ class Category(StrEnum):
     HEALTH = 'health'
     ENVIRONMENT = 'environment'
 
+    RETAIL = 'retail'
+    MACRO = 'macro'
+    CRYPTO = 'crypto'
+    WORLD = 'world'
+    SCIENCE = 'science'
+    INCIDENT = 'incident'  # Происшествия, катастрофы
+
     OTHER = 'other'
