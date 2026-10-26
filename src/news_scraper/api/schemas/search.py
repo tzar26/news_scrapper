@@ -25,6 +25,10 @@ class SearchRequest(BaseModel):
         le=30,
         description='Искать статьи за последние N дней. Если None — за всё время.',
     )
+    use_hyde: bool = Field(
+        default=False,
+        description='Применить HyDE (генерация гипотетического ответа перед поиском)',
+    )
 
 
 class RelatedArticleResponse(BaseModel):

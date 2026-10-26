@@ -30,6 +30,7 @@ async def semantic_search(
         request.query,
         top_k=request.top_k,
         days_ago=request.days_ago,
+        use_hyde=request.use_hyde,
     )
     return SearchResponse(
         query=request.query,

@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from news_scraper.db.models import Article
 from news_scraper.domain.enums import Category, Country
 from news_scraper.infra.ollama_client import OllamaClient
+from news_scraper.rag.hyde import generate_hypothetical_answer
 
 RRF_K = 60
 _QUERY_MULTIPLIER = 6
@@ -169,6 +170,7 @@ async def search(
     category: Category | None = None,
     client: OllamaClient | None = None,
     days_ago: int | None = None,
+    use_hyde: bool = False,
 ) -> list[SearchResult]:
     """Hybrid-поиск: BM25 + vector + RRF + дедупликация по content_hash.
 
@@ -194,9 +196,13 @@ async def search(
     try:
         top_n = top_k * _QUERY_MULTIPLIER
 
+        search_query = query
+        if use_hyde:
+            search_query = await generate_hypothetical_answer(query)
+
         vector_results = await _search_vector(
             session,
-            query,
+            search_query,
             top_n=top_n,
             country=country,
             category=category,
@@ -205,7 +211,7 @@ async def search(
         )
         bm25_results = await _search_bm25(
             session,
-            query,
+            search_query,
             top_n=top_n,
             country=country,
             category=category,

@@ -84,6 +84,7 @@ async def answer_question(
     model: str = DEFAULT_MODEL,
     client: OllamaClient | None = None,
     days_ago: int | None = None,
+    use_hyde: bool = False,
 ) -> RAGAnswer:
     """Отвечает на вопрос, опираясь на статьи из БД.
 
@@ -116,6 +117,7 @@ async def answer_question(
                 candidates=30,
                 client=client,
                 days_ago=days_ago,
+                use_hyde=use_hyde,
             )
         else:
             results = await search(
@@ -124,6 +126,7 @@ async def answer_question(
                 top_k=top_k,
                 client=client,
                 days_ago=days_ago,
+                use_hyde=use_hyde,
             )
         if not results:
             return RAGAnswer(
@@ -170,6 +173,7 @@ async def answer_question_stream(
     model: str = DEFAULT_MODEL,
     client: OllamaClient | None = None,
     days_ago: int | None = None,
+    use_hyde: bool = False,
 ) -> AsyncIterator[str]:
     """Стриминговый ответ на вопрос (SSE).
 
@@ -192,6 +196,7 @@ async def answer_question_stream(
                 candidates=30,
                 client=client,
                 days_ago=days_ago,
+                use_hyde=use_hyde,
             )
         else:
             results = await search(
@@ -200,6 +205,7 @@ async def answer_question_stream(
                 top_k=top_k,
                 client=client,
                 days_ago=days_ago,
+                use_hyde=use_hyde,
             )
 
         if not results:

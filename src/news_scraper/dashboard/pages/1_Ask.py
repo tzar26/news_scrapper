@@ -37,7 +37,7 @@ def main() -> None:
         )
         top_k = st.slider('Сколько статей подать в контекст', 1, 10, 5)
 
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(3)
         with col1:
             use_rerank = st.checkbox('Применить reranking', value=False)
         with col2:
@@ -46,6 +46,8 @@ def main() -> None:
             period_str = st.selectbox('Период', ['Всё время', 'За 1 день', 'За 3 дня', 'За 7 дней'])
             days_ago_map = {'Всё время': None, 'За 1 день': 1, 'За 3 дня': 3, 'За 7 дней': 7}
             days_ago = days_ago_map[period_str]
+        with col4:
+            use_hyde = st.checkbox('Применить HyDE (умный поиск)', value=False)
 
         submitted = st.form_submit_button('Спросить')
 
@@ -66,7 +68,15 @@ def main() -> None:
     if use_streaming:
         # Стриминговый режим
         with st.spinner('Ищу и печатаю...'):
-            st.write_stream(stream_ask(question, top_k=top_k, rerank=use_rerank, days_ago=days_ago))
+            st.write_stream(
+                stream_ask(
+                    question,
+                    top_k=top_k,
+                    rerank=use_rerank,
+                    days_ago=days_ago,
+                    use_hyde=use_hyde,
+                )
+            )
 
         # Источники берём из session_state (их туда положил stream_ask)
         sources = st.session_state.get('sources', [])
@@ -74,7 +84,13 @@ def main() -> None:
         # Обычный режим
         with st.spinner('Ищу и генерирую ответ... (~10 сек)'):
             try:
-                result = ask_question(question, top_k=top_k, rerank=use_rerank, days_ago=days_ago)
+                result = ask_question(
+                    question,
+                    top_k=top_k,
+                    rerank=use_rerank,
+                    days_ago=days_ago,
+                    use_hyde=use_hyde,
+                )
             except Exception as exc:
                 st.error(f'Ошибка: {exc}')
                 return

@@ -26,6 +26,7 @@ async def ask(
         top_k=request.top_k,
         rerank=request.rerank,
         days_ago=request.days_ago,
+        use_hyde=request.use_hyde,
     )
     sources = [SourceRefResponse(id=s.id, url=s.url, title=s.title) for s in result.sources]
     return AskResponse(answer=result.answer, sources=sources)
@@ -49,6 +50,7 @@ async def ask_stream(
             top_k=request.top_k,
             rerank=request.rerank,
             days_ago=request.days_ago,
+            use_hyde=request.use_hyde,
         ):
             # В SSE нельзя передавать переносы строк (они интерпретируются как конец события)
             # Поэтому экранируем их как \\n

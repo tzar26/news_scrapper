@@ -33,12 +33,19 @@ def ask_question(
     top_k: int = 5,
     rerank: bool = False,
     days_ago: int | None = None,
+    use_hyde: bool = False,
 ) -> dict:
     """Отправляет вопрос в POST /ask. Не кэшируется — вопрос каждый раз новый.
     Timeout 90 секунд — rerank медленнее.
     """
     with httpx.Client(timeout=90.0) as client:
-        payload = {'question': question, 'top_k': top_k, 'rerank': rerank, 'days_ago': days_ago}
+        payload = {
+            'question': question,
+            'top_k': top_k,
+            'rerank': rerank,
+            'days_ago': days_ago,
+            'use_hyde': use_hyde,
+        }
         response = client.post(
             f'{API_BASE_URL}/ask',
             json=payload,
@@ -86,6 +93,7 @@ def stream_ask(
     top_k: int = 5,
     rerank: bool = False,
     days_ago: int | None = None,
+    use_hyde: bool = False,
 ):
     """Генератор для st.write_stream.
 
@@ -94,7 +102,13 @@ def stream_ask(
     """
     st.session_state['sources'] = []
 
-    payload = {'question': question, 'top_k': top_k, 'rerank': rerank, 'days_ago': days_ago}
+    payload = {
+        'question': question,
+        'top_k': top_k,
+        'rerank': rerank,
+        'days_ago': days_ago,
+        'use_hyde': use_hyde,
+    }
 
     with httpx.stream(
         'POST', f'{API_BASE_URL}/ask/stream', json=payload, timeout=120.0
