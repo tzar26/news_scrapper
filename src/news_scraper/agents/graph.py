@@ -16,7 +16,12 @@ from langgraph.graph import END, START, StateGraph
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from news_scraper.agents.state import AgentState
-from news_scraper.agents.tools import make_entity_tool, make_metrics_tool, make_search_tool
+from news_scraper.agents.tools import (
+    make_entity_tool,
+    make_metrics_tool,
+    make_search_tool,
+    make_sentiment_tool,
+)
 from news_scraper.infra.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -73,6 +78,10 @@ def _tools_to_schema(tools: list) -> list[dict]:
                             'sentiment': {
                                 'type': 'string',
                                 'description': 'Тональность: positive, negative или neutral (для search_by_entity)',
+                            },
+                            'category': {
+                                'type': 'string',
+                                'description': 'Категория новостей: energy, politics, economy, technology, auto, retail и т.д. (для get_sentiment)',
                             },
                         },
                         'required': ['query'],
@@ -232,7 +241,12 @@ def _should_continue(state: AgentState) -> Literal['tools', 'finalize']:
 
 async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
     """Запускает агента и возвращает финальный ответ."""
-    tools = [make_search_tool(session), make_metrics_tool(session), make_entity_tool(session)]
+    tools = [
+        make_search_tool(session),
+        make_metrics_tool(session),
+        make_entity_tool(session),
+        make_sentiment_tool(session),
+    ]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
     async def planner_node(state: AgentState) -> dict[str, Any]:
@@ -288,7 +302,12 @@ async def run_agent_stream(
     Выдаёт SSE-форматированные строки.
     Использует stream_mode="values" для надёжного перехвата состояний.
     """
-    tools = [make_search_tool(session), make_metrics_tool(session), make_entity_tool(session)]
+    tools = [
+        make_search_tool(session),
+        make_metrics_tool(session),
+        make_entity_tool(session),
+        make_sentiment_tool(session),
+    ]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
     async def planner_node(state: AgentState) -> dict[str, Any]:
@@ -366,6 +385,11 @@ async def run_agent_stream(
                             days = parsed_args.get('days_ago')
                             days_str = f' за последние {days} дн.' if days else ''
                             status_msg = f'📊 Считаю статистику по «{group_by}»{days_str}'
+                        elif tool_name == 'get_sentiment':
+                            category = parsed_args.get('category', '')
+                            days = parsed_args.get('days_ago')
+                            days_str = f' за {days} дн.' if days else ''
+                            status_msg = f'📊 Анализирую тональность «{category}»{days_str}'
                         else:
                             status_msg = f'🛠️ Вызываю {tool_name}...'
                     except Exception:

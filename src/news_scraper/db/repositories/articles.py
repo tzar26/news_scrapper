@@ -222,3 +222,51 @@ class ArticleRepository:
         article.sentiment = sentiment
         article.entities = entities
         await self._session.commit()
+
+    async def get_sentiment_stats(
+        self,
+        category: str,
+        days_ago: int | None = None,
+    ) -> dict:
+        """Возвращает статистику тональности для категории.
+
+        Args:
+            category: Название категории (например, 'energy').
+            days_ago: Фильтр по свежести (если None — за всё время).
+
+        Returns:
+            Dict с ключами: positive, neutral, negative, total, score.
+        """
+        from datetime import UTC, datetime, timedelta
+
+        from sqlalchemy import func
+
+        # Базовый запрос
+        stmt = select(Article.sentiment, func.count()).where(
+            Article.category_predicted == category, Article.sentiment.is_not(None)
+        )
+
+        if days_ago is not None:
+            cutoff = datetime.now(UTC) - timedelta(days=days_ago)
+            stmt = stmt.where(Article.published_at >= cutoff)
+
+        stmt = stmt.group_by(Article.sentiment)
+        result = await self._session.execute(stmt)
+        rows = result.all()
+
+        stats = {'positive': 0, 'neutral': 0, 'negative': 0}
+        total = 0
+        for sentiment, count in rows:
+            if sentiment in stats:
+                stats[sentiment] = count
+                total += count
+
+        # Считаем индекс (только по окрашенным)
+        colored = stats['positive'] + stats['negative']
+        score = ((stats['positive'] - stats['negative']) / colored) * 100 if colored > 0 else 0.0
+
+        return {
+            **stats,
+            'total': total,
+            'score': round(score, 1),
+        }

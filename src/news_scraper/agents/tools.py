@@ -190,3 +190,69 @@ class SearchByEntityTool:
 def make_entity_tool(session: AsyncSession) -> SearchByEntityTool:
     """Создаёт инструмент поиска по сущностям."""
     return SearchByEntityTool(session)
+
+
+class GetSentimentTool:
+    """Инструмент для оценки тональности (настроения) в категории."""
+
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+        self.name = 'get_sentiment'
+        self.description = (
+            'Оценивает общую тональность (настроение) в конкретной категории новостей. '
+            'Возвращает индекс от -100 (очень негативно) до +100 (очень позитивно).'
+        )
+
+    async def invoke(self, args: dict[str, Any]) -> str:
+        """Получает тональность категории.
+
+        Args:
+            args: dict с ключами:
+                - category (str): категория (energy, politics, economy и т.д.).
+                - days_ago (int, optional): фильтр по свежести.
+        """
+        from news_scraper.db.repositories import ArticleRepository
+
+        category = args.get('category')
+        try:
+            days_ago = args.get('days_ago')
+            if days_ago is not None:
+                days_ago = int(days_ago)
+        except (ValueError, TypeError):
+            days_ago = None
+
+        if not isinstance(category, str) or not category.strip():
+            return 'Ошибка: необходимо указать категорию (например, "energy").'
+
+        repo = ArticleRepository(self._session)
+        stats = await repo.get_sentiment_stats(category, days_ago)
+
+        if stats['total'] == 0:
+            return f'За указанный период новостей в категории "{category}" не найдено.'
+
+        period = f'за последние {days_ago} дн.' if days_ago else 'за всё время'
+
+        # Формируем человекочитаемый вывод
+        lines = [
+            f'Анализ тональности категории "{category}" ({period}):',
+            f'- Всего статей: {stats["total"]}',
+            f'- Позитивных: {stats["positive"]}',
+            f'- Нейтральных: {stats["neutral"]}',
+            f'- Негативных: {stats["negative"]}',
+            f'- Индекс тональности: {stats["score"]} (от -100 до +100)',
+        ]
+
+        # Добавляем интерпретацию
+        if stats['score'] > 20:
+            lines.append('Вывод: преобладает позитивный новостной фон.')
+        elif stats['score'] < -20:
+            lines.append('Вывод: преобладает негативный новостной фон.')
+        else:
+            lines.append('Вывод: новостной фон нейтральный или смешанный.')
+
+        return '\n'.join(lines)
+
+
+def make_sentiment_tool(session: AsyncSession) -> GetSentimentTool:
+    """Создаёт инструмент оценки тональности."""
+    return GetSentimentTool(session)
