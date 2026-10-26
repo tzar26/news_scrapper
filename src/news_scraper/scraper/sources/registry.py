@@ -7,6 +7,7 @@ from news_scraper.scraper.sources.interfax import InterfaxSource
 from news_scraper.scraper.sources.investfuture import InvestFutureSource
 from news_scraper.scraper.sources.kommersant import KommersantSource
 from news_scraper.scraper.sources.marketwatch import MarketWatchSource
+from news_scraper.scraper.sources.newretail import NewRetailSource
 from news_scraper.scraper.sources.npr import NPRSource
 from news_scraper.scraper.sources.nyt import NYTSource
 from news_scraper.scraper.sources.oilprice import OilPriceSource
@@ -14,6 +15,7 @@ from news_scraper.scraper.sources.pbsnews import PBSNewsSource
 from news_scraper.scraper.sources.prime import PrimeSource
 from news_scraper.scraper.sources.rbc import RBCSource
 from news_scraper.scraper.sources.rbk import RBKSource
+from news_scraper.scraper.sources.retail import RetailSource
 from news_scraper.scraper.sources.smartlab import SmartLabSource
 from news_scraper.scraper.sources.tass import TASSSource
 from news_scraper.scraper.sources.vedomosti import VedomostiSource
@@ -40,6 +42,8 @@ ALL_SOURCES: list[type[Source]] = [
     InvestFutureSource,
     VedomostiSource,
     CBRFSource,
+    RetailSource,
+    NewRetailSource,
 ]
 
 
