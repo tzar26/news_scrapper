@@ -5,6 +5,7 @@ from __future__ import annotations
 import streamlit as st
 
 from news_scraper.dashboard._shared import render_sidebar, stream_agent
+from news_scraper.domain.enums import Category
 
 
 def main() -> None:
@@ -13,6 +14,16 @@ def main() -> None:
     st.title('🤖 Agent')
     st.caption('Multi-step анализ: агент сам решает, какие статьи искать и как их сравнить.')
     render_sidebar()
+
+    with st.expander('📚 Доступные категории для анализа'):
+        st.markdown(
+            'Агент умеет анализировать тональность и метрики по следующим секторам (используйте английские названия):'
+        )
+        # Выводим категории в красивом виде
+        cats = [c.value for c in Category if c.value != 'other']
+        cols = st.columns(3)
+        for i, cat in enumerate(cats):
+            cols[i % 3].code(cat)
 
     with st.form('agent_form'):
         question = st.text_input(
