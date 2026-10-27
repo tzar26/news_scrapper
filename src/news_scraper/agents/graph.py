@@ -20,7 +20,6 @@ from news_scraper.agents.tools import (
     make_entity_tool,
     make_metrics_tool,
     make_search_tool,
-    make_sentiment_tool,
 )
 from news_scraper.infra.settings import settings
 
@@ -245,7 +244,6 @@ async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
         make_search_tool(session),
         make_metrics_tool(session),
         make_entity_tool(session),
-        make_sentiment_tool(session),
     ]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
@@ -306,7 +304,6 @@ async def run_agent_stream(
         make_search_tool(session),
         make_metrics_tool(session),
         make_entity_tool(session),
-        make_sentiment_tool(session),
     ]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
