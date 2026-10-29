@@ -13,6 +13,7 @@ celery_app = Celery(
         'news_scraper.tasks.enrichment',
         'news_scraper.tasks.classification',
         'news_scraper.tasks.extraction',
+        'news_scraper.tasks.impact',
     ],
 )
 
@@ -43,6 +44,10 @@ celery_app.conf.update(
         },
         'extract-batch-every-6-hours': {
             'task': 'news_scraper.tasks.extraction.extract_batch',
+            'schedule': 21600.0,  # 6 часов
+        },
+        'impact-batch-every-6-hours': {
+            'task': 'news_scraper.tasks.impact.impact_batch',
             'schedule': 21600.0,  # 6 часов
         },
     },

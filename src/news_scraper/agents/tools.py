@@ -256,3 +256,97 @@ class GetSentimentTool:
 def make_sentiment_tool(session: AsyncSession) -> GetSentimentTool:
     """Создаёт инструмент оценки тональности."""
     return GetSentimentTool(session)
+
+
+class GetMarketImpactTool:
+    """Инструмент для оценки рыночного внимания к секторам."""
+
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+        self.name = 'get_market_impact'
+        self.description = (
+            'Оценивает новостной фон в секторах. Показывает, сколько важных событий (HIGH) '
+            'было в каждом секторе и в какую сторону (bullish/bearish) они направлены.'
+        )
+
+    async def invoke(self, args: dict[str, Any]) -> str:
+        """Получает статистику по важным событиям.
+
+        Args:
+            args: dict с ключами:
+                - days_ago (int, optional): фильтр по свежести.
+        """
+        from datetime import UTC, datetime, timedelta
+
+        from sqlalchemy import select
+
+        from news_scraper.db.models import Article
+
+        try:
+            days_ago = args.get('days_ago')
+            if days_ago is not None:
+                days_ago = int(days_ago)
+        except (ValueError, TypeError):
+            days_ago = None
+
+        # Ищем только HIGH события с влиянием на сектора
+        stmt = select(Article.market_impact).where(
+            Article.market_impact.is_not(None),
+            Article.market_impact['importance'].astext == 'high',
+            Article.market_impact['main_sector'].astext != 'none',
+        )
+
+        if days_ago is not None:
+            cutoff = datetime.now(UTC) - timedelta(days=days_ago)
+            stmt = stmt.where(Article.published_at >= cutoff)
+
+        result = await self._session.execute(stmt)
+        impacts = result.scalars().all()
+
+        if not impacts:
+            return 'За указанный период важных рыночных событий не найдено.'
+
+        # Агрегируем
+        stats: dict[str, dict[str, int]] = {}
+        for imp in impacts:
+            if not isinstance(imp, dict):
+                continue
+            sector = imp.get('main_sector')
+            direction = imp.get('direction')
+            if sector and direction:
+                stats.setdefault(sector, {'bullish': 0, 'bearish': 0, 'neutral': 0})
+                if direction in stats[sector]:
+                    stats[sector][direction] += 1
+
+        period = f'за последние {days_ago} дн.' if days_ago else 'за всё время'
+        lines = [f'Новостной фон по секторам ({period}):']
+
+        # Сортируем по количеству событий (сумма bullish+bearish)
+        sorted_sectors = sorted(
+            stats.items(),
+            key=lambda x: x[1]['bullish'] + x[1]['bearish'],
+            reverse=True,
+        )
+
+        for sector, counts in sorted_sectors:
+            total = counts['bullish'] + counts['bearish']
+            if total == 0:
+                continue
+            sentiment = (
+                'позитивный'
+                if counts['bullish'] > counts['bearish']
+                else 'негативный'
+                if counts['bearish'] > counts['bullish']
+                else 'смешанный'
+            )
+            lines.append(
+                f'- {sector}: {total} важных событий '
+                f'(bullish: {counts["bullish"]}, bearish: {counts["bearish"]}) -> {sentiment} фон'
+            )
+
+        return '\n'.join(lines)
+
+
+def make_market_impact_tool(session: AsyncSession) -> GetMarketImpactTool:
+    """Создаёт инструмент оценки рыночного фона."""
+    return GetMarketImpactTool(session)

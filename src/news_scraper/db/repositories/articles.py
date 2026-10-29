@@ -270,3 +270,21 @@ class ArticleRepository:
             'total': total,
             'score': round(score, 1),
         }
+
+    async def get_without_market_impact(self, limit: int = 50) -> list[Article]:
+        """Возвращает статьи без оценки влияния на рынок."""
+        stmt = (
+            select(Article)
+            .where(Article.market_impact.is_(None))
+            .order_by(Article.published_at.desc())
+            .limit(limit)
+        )
+        result = await self._session.execute(stmt)
+        return list(result.scalars().all())
+
+    async def set_market_impact(self, article_id: int, impact: dict) -> None:
+        """Сохраняет оценку влияния на рынок."""
+        article = await self._session.get(Article, article_id)
+        if article:
+            article.market_impact = impact
+            await self._session.commit()

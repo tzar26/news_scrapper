@@ -18,6 +18,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from news_scraper.agents.state import AgentState
 from news_scraper.agents.tools import (
     make_entity_tool,
+    make_market_impact_tool,
     make_metrics_tool,
     make_search_tool,
 )
@@ -41,6 +42,7 @@ PLANNER_PROMPT = """Ты — аналитик новостей. Твоя зад�
 6. Для получения статистики (сколько статей, какие категории) используй инструмент get_metrics.
 7. Инструмент get_metrics возвращает текстовую статистику. Используй её, чтобы ответить на вопрос пользователя.
 8. Для поиска новостей про конкретную компанию или персону используй search_by_entity (можно указать sentiment: positive/negative/neutral).
+9. Для оценки новостного фона в секторах используй get_market_impact (например, "какие сектора сейчас в фокусе?").
 
 Не выдумывай. Опирайся только на найденные статьи."""
 
@@ -244,6 +246,7 @@ async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
         make_search_tool(session),
         make_metrics_tool(session),
         make_entity_tool(session),
+        make_market_impact_tool(session),
     ]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
@@ -304,6 +307,7 @@ async def run_agent_stream(
         make_search_tool(session),
         make_metrics_tool(session),
         make_entity_tool(session),
+        make_market_impact_tool(session),
     ]
     tools_map = {getattr(t, 'name', 'unknown'): t for t in tools}
 
@@ -382,11 +386,10 @@ async def run_agent_stream(
                             days = parsed_args.get('days_ago')
                             days_str = f' за последние {days} дн.' if days else ''
                             status_msg = f'📊 Считаю статистику по «{group_by}»{days_str}'
-                        elif tool_name == 'get_sentiment':
-                            category = parsed_args.get('category', '')
+                        elif tool_name == 'get_market_impact':
                             days = parsed_args.get('days_ago')
                             days_str = f' за {days} дн.' if days else ''
-                            status_msg = f'📊 Анализирую тональность «{category}»{days_str}'
+                            status_msg = f'📊 Оцениваю новостной фон{days_str}'
                         else:
                             status_msg = f'🛠️ Вызываю {tool_name}...'
                     except Exception:

@@ -23,6 +23,7 @@ class Article(Base):
     category — результат маппинга через _CATEGORY_MAP.
     sentiment — тональность статьи (positive, neutral, negative).
     entities — извлеченные сущности в формате JSON: [{"text": "Компания", "type": "ORG"}, ...].
+    market_impact — влияние на рынок в разрезе категорий.
     """
 
     __tablename__ = 'articles'
@@ -79,6 +80,10 @@ class Article(Base):
         index=True,
     )
     entities: Mapped[list[dict] | None] = mapped_column(
+        JSONB,
+        nullable=True,
+    )
+    market_impact: Mapped[dict | None] = mapped_column(
         JSONB,
         nullable=True,
     )
