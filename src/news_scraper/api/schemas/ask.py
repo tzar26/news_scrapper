@@ -33,6 +33,10 @@ class AskRequest(BaseModel):
         default=False,
         description='Применить HyDE (генерация гипотетического ответа перед поиском)',
     )
+    evaluate: bool = Field(
+        default=False,
+        description='Оценить качество ответа (Faithfulness, Relevance)',
+    )
 
 
 class SourceRefResponse(BaseModel):
