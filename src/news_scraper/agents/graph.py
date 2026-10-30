@@ -140,6 +140,8 @@ async def _call_planner(state: AgentState, tools: list) -> dict[str, Any]:
     client = ollama.AsyncClient(host=settings.ollama_base_url)
 
     messages: list[dict] = [{'role': 'system', 'content': PLANNER_PROMPT}]
+    if state.get('history'):
+        messages.extend(state['history'])
     messages.extend(state['messages'])
 
     response = await client.chat(
@@ -297,6 +299,7 @@ async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
 async def run_agent_stream(
     session: AsyncSession,
     question: str,
+    history: list[dict] | None = None,
 ) -> AsyncIterator[str]:
     """Стриминговый запуск агента.
 
@@ -337,6 +340,7 @@ async def run_agent_stream(
 
     initial: AgentState = {
         'question': question,
+        'history': history or [],
         'messages': [{'role': 'user', 'content': question}],
         'iterations': 0,
         'final_answer': None,

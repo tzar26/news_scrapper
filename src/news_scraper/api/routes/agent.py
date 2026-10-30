@@ -21,7 +21,7 @@ async def agent_endpoint(
     выполняет multi-step рассуждения и формирует ответ.
     Может быть медленнее /ask из-за нескольких шагов.
     """
-    result = await run_agent(session, request.question)
+    result = await run_agent(session, request.question, history=request.history)
     return AgentResponse(
         answer=result['answer'],
         iterations=result['iterations'],
@@ -36,7 +36,7 @@ async def agent_stream_endpoint(
     """Стриминговый запуск агента (SSE)."""
 
     async def event_generator():
-        async for chunk in run_agent_stream(session, request.question):
+        async for chunk in run_agent_stream(session, request.question, history=request.history):
             yield chunk
 
     return StreamingResponse(event_generator(), media_type='text/event-stream')

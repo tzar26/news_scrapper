@@ -77,12 +77,13 @@ def render_sidebar() -> None:
             st.rerun()
 
 
-def ask_agent(question: str) -> dict:
+def ask_agent(question: str, history: list[dict] | None = None) -> dict:
     """Отправляет вопрос в POST /agent."""
     with httpx.Client(timeout=120.0) as client:  # агент может думать долго
+        payload = {'question': question, 'history': history}
         response = client.post(
             f'{API_BASE_URL}/agent',
-            json={'question': question},
+            json=payload,
         )
         response.raise_for_status()
         return response.json()
@@ -129,14 +130,9 @@ def stream_ask(
             yield chunk.replace('\\n', '\n')
 
 
-def stream_agent(question: str):
+def stream_agent(question: str, history: list[dict] | None = None):
     """Генератор для стриминга агента в Streamlit."""
-    import json
-
-    import httpx
-    import streamlit as st
-
-    payload = {'question': question}
+    payload = {'question': question, 'history': history}
 
     try:
         with httpx.stream(

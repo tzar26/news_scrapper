@@ -1,11 +1,10 @@
-"""Страница Agent: LangGraph-агент с multi-step reasoning."""
+"""Страница Agent: LangGraph-агент с multi-step reasoning и историей диалога."""
 
 from __future__ import annotations
 
 import streamlit as st
 
 from news_scraper.dashboard._shared import render_sidebar, stream_agent
-from news_scraper.domain.enums import Category
 
 
 def main() -> None:
@@ -15,37 +14,40 @@ def main() -> None:
     st.caption('Multi-step анализ: агент сам решает, какие статьи искать и как их сравнить.')
     render_sidebar()
 
-    with st.expander('📚 Доступные категории для анализа'):
-        st.markdown(
-            'Агент умеет анализировать тональность и метрики по следующим секторам (используйте английские названия):'
-        )
-        # Выводим категории в красивом виде
-        cats = [c.value for c in Category if c.value != 'other']
-        cols = st.columns(3)
-        for i, cat in enumerate(cats):
-            cols[i % 3].code(cat)
+    # Инициализируем историю в сессии (если её нет)
+    if 'agent_history' not in st.session_state:
+        st.session_state.agent_history = []
 
-    with st.form('agent_form'):
-        question = st.text_input(
-            'Вопрос',
-            placeholder='Например: Сравни ситуацию с нефтью и газом в России',
-            max_chars=500,
-        )
-        submitted = st.form_submit_button('Спросить агента')
+    # Кнопка очистки истории
+    if st.button('Очистить историю'):
+        st.session_state.agent_history = []
+        st.rerun()
 
-    if not submitted:
-        st.info('Задайте сложный вопрос. Например: «Сравни ключевую ставку и инфляцию».')
-        return
+    # Отображаем историю диалога
+    for msg in st.session_state.agent_history:
+        role = 'user' if msg['role'] == 'user' else 'assistant'
+        with st.chat_message(role):
+            st.markdown(msg['content'])
 
-    if not question.strip():
-        st.warning('Введите вопрос.')
-        return
+    # Поле ввода
+    if prompt := st.chat_input('Задайте вопрос агенту...'):
+        # Показываем сообщение пользователя
+        with st.chat_message('user'):
+            st.markdown(prompt)
 
-    st.markdown('### Ответ')
+        # Добавляем в историю
+        st.session_state.agent_history.append({'role': 'user', 'content': prompt})
 
-    # stream_agent будет yield-ить токены, а статусы печатать через st.info
-    with st.spinner('Агент работает...'):
-        st.write_stream(stream_agent(question))
+        # Генерируем ответ
+        with st.chat_message('assistant'), st.spinner('Агент работает...'):
+            # Передаем историю (все сообщения КРОМЕ текущего prompt, чтобы не дублировать)
+            history_to_pass = st.session_state.agent_history[:-1]
+
+            # Запускаем стриминг
+            response_text = st.write_stream(stream_agent(prompt, history=history_to_pass))
+
+        # Сохраняем ответ агента в историю
+        st.session_state.agent_history.append({'role': 'assistant', 'content': response_text})
 
 
 if __name__ == '__main__':

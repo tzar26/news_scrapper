@@ -19,6 +19,7 @@ class AgentState(TypedDict):
     """
 
     question: str
+    history: list[dict]
     messages: Annotated[list[dict], add]
     iterations: int
     final_answer: str | None
