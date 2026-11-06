@@ -242,7 +242,11 @@ def _should_continue(state: AgentState) -> Literal['tools', 'finalize']:
     return 'finalize'
 
 
-async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
+async def run_agent(
+    session: AsyncSession,
+    question: str,
+    history: list[dict] | None = None,
+) -> dict[str, Any]:
     """Запускает агента и возвращает финальный ответ."""
     tools = [
         make_search_tool(session),
@@ -278,6 +282,7 @@ async def run_agent(session: AsyncSession, question: str) -> dict[str, Any]:
 
     initial: AgentState = {
         'question': question,
+        'history': history or [],
         'messages': [{'role': 'user', 'content': question}],
         'iterations': 0,
         'final_answer': None,
