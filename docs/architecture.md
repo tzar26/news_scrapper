@@ -1,4 +1,4 @@
-# Архитектура проекта News Scraper
+# Архитектура проекта News Scraper & AI Market Analyst
 
 Проект спроектирован с учётом принципов **изоляции доменной логики** и **устойчивости к внешним зависимостям** (self-hosted).
 
@@ -15,18 +15,13 @@ graph TD
         DB[(PostgreSQL + pgvector)]
     end
 
-    subgraph "AI Обогащение (Фон)"
-        DB -->|Без эмбеддингов| Enrich[Enrichment Worker]
-        DB -->|Без категории| Classify[Classification Worker]
-        DB -->|Без сущностей| Extract[NER/Sentiment Worker]
+    subgraph "AI Обогащение (Pipeline)"
+        DB -->|Без эмбеддингов| Pipeline[Unified Pipeline]
+        Pipeline -->|Classify| Ollama[Ollama Server]
+        Pipeline -->|NER & Impact| Ollama
+        Pipeline -->|Summary & Embed| Ollama
 
-        Enrich -->|bge-m3| Ollama[Ollama Server]
-        Classify -->|qwen2.5| Ollama
-        Extract -->|qwen2.5| Ollama
-
-        Enrich --> DB
-        Classify --> DB
-        Extract --> DB
+        Pipeline --> DB
     end
 
     subgraph "Пользовательский слой"
@@ -39,8 +34,18 @@ graph TD
         API --> UI[Streamlit Dashboard]
     end
 
+    subgraph "ML & Trading (Private Phase)"
+        DB -->|News + Prices| MLDataset[ML Dataset Builder]
+        API_MOEX[MOEX API] -->|Candles| MLDataset
+        MLDataset -->|Features| MLModel[RandomForest]
+        MLModel -->|Signal P_up| SignalAPI[FastAPI /signal]
+        SignalAPI --> UI
+    end
+
     style DB fill:#f9f,stroke:#333,stroke-width:2px
     style Ollama fill:#bbf,stroke:#333
+    style MLModel fill:#dfd,stroke:#333
+    style SignalAPI fill:#dfd,stroke:#333
 ```
 
 ## Слои приложения (Clean Architecture)
@@ -73,6 +78,7 @@ graph TD
 - classifier.py: Zero-shot классификация статей через Qwen.
 - extractor.py: Извлечение NER и Sentiment через Qwen (с принудительным JSON-форматом).
 - embeddings.py: Получение векторов через bge-m3.
+- pipeline.py: Единый конвейер обработки (Classify -> Filter -> Impact -> NER -> Embed) для экономии GPU-ресурсов.
 
 ### 5. rag/
 
@@ -93,14 +99,22 @@ FastAPI. Слой контроллеров.
 - routes/: Эндпоинты (/articles, /ask, /agent, /stats).
 - schemas/: Pydantic-схемы для валидации запросов/ответов API (отдельно от домена).
 
+### 8. ml/ & trading/ (Приватная ветка)
+
+Слой предиктивной аналитики для фондового рынка.
+- ml/dataset.py: Сборка ML-датасета (новости + котировки MOEX).
+- ml/train.py: Обучение модели (RandomForest), Walk-Forward Validation.
+- ml/signal.py: Генерация торгового сигнала (BUY/SELL/NEUTRAL) и калибровка.
+- trading/entity_linking.py: Сопоставление NER-сущностей с тикерами Мосбиржи (SBER, GAZP).
+
 ## Потоки данных
 
 ### 1. Сбор и обогащение (Фон)
 
 1. Celery Beat раз в час запускает scrape_all_sources.
 2. Скрапер скачивает RSS, парсит и сохраняет в PostgreSQL (с дедупликацией по content_hash).
-3. Celery Beat раз в 5 минут (или вручную) запускает enrich_batch (создание эмбеддингов).
-4. Celery Beat раз в 6 часов запускает classify_batch (категории) и extract_batch (NER/Sentiment).
+3. Celery Beat запускает process_batch (Unified Pipeline). Он последовательно классифицирует статью, фильтрует «мусор» (спорт, культура), оценивает Market Impact, извлекает NER и делает эмбеддинг.
+4. Все результаты атомарно сохраняются в БД.
 
 ### 2. RAG Запрос (Online)
 
@@ -117,6 +131,14 @@ FastAPI. Слой контроллеров.
 3. Инструмент обращается к БД (с учётом JSONB сущностей).
 4. Результат возвращается в агент, который формирует финальный ответ.
 
+### 4. Генерация торгового сигнала (Приватная часть)
+
+1. Скрипт fetch_moex_candles.py загружает исторические котировки (свечи) для выбранных тикеров.
+2. Скрипт build_ml_dataset.py объединяет новости (с рассчитанным market_pressure) и котировки, формируя фичи (vol_5d, adv_20d, news_count).
+3. Модель RandomForest (в train_simple_model.py) обучается с использованием Walk-Forward Validation.
+4. Эндпоинт GET /signal/{ticker} возвращает сигнал (BUY/SELL/NEUTRAL), вероятность (P(up)) и список новостей, повлиявших на решение (Explainable AI).
+
 ## Observability
 
 - Langfuse: Все шаги RAG и LangGraph-агента трейсятся. В UI видно, сколько токенов потрачено, на каком шаге произошла ошибка и какие аргументы передавались в инструменты.
+- MLflow (В планах): Для отслеживания экспериментов с ML-моделями (Accuracy, MAPE) и версионирования датасетов.
