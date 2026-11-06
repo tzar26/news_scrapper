@@ -126,7 +126,9 @@ celery -A news_scraper.tasks.celery_app:celery_app worker --loglevel=info
 ### Доступ к интерфейсам
 
 Streamlit Dashboard: http://localhost:8501
+
 FastAPI Swagger UI: http://localhost:8000/docs
+
 Langfuse UI: http://localhost:3000 (если запущен)
 
 ## Текущий статус и метрики
