@@ -194,6 +194,9 @@ Langfuse UI: http://localhost:3000 (если запущен)
 - [ ] **Volume Anomaly**: Флаг аномального объёма (`volume > 3 * ADV_20d`).
 - [ ] **Corporate Actions**: Классификация buyback / SPO / dividends через LLM.
 - [ ] **Expected Return (E[return])**: Регрессия доходности + Risk/Reward.
+- [ ] **Backtest / Track Record** Ретроспективная оценка.
+- [ ] **Human-in-the-loop** Ручная корректировка Impact.
+- [ ] **Data Integrity**: Health Check новостей.
 
 **Core R&D (ADR-025, Трек 2):**
 - [ ] **Event Horizons**: Прогноз горизонта выхода (Take Profit) по типу события.
