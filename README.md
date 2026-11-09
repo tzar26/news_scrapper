@@ -196,7 +196,6 @@ Langfuse UI: http://localhost:3000 (если запущен)
 - [ ] **Expected Return (E[return])**: Регрессия доходности + Risk/Reward.
 - [ ] **Backtest / Track Record** Ретроспективная оценка.
 - [ ] **Human-in-the-loop** Ручная корректировка Impact.
-- [ ] **Data Integrity**: Health Check новостей.
 - [ ] **Data Integrity (Health Check)**: Ленивая проверка доступности новостей (только bullish/bearish) перед генерацией сигнала (ADR-026).
 
 **Core R&D (ADR-025, Трек 2):**
