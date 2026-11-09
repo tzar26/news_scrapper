@@ -197,6 +197,7 @@ Langfuse UI: http://localhost:3000 (если запущен)
 - [ ] **Backtest / Track Record** Ретроспективная оценка.
 - [ ] **Human-in-the-loop** Ручная корректировка Impact.
 - [ ] **Data Integrity**: Health Check новостей.
+- [ ] **Data Integrity (Health Check)**: Ленивая проверка доступности новостей (только bullish/bearish) перед генерацией сигнала (ADR-026).
 
 **Core R&D (ADR-025, Трек 2):**
 - [ ] **Event Horizons**: Прогноз горизонта выхода (Take Profit) по типу события.
