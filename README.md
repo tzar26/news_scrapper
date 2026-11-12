@@ -235,6 +235,7 @@ Langfuse UI: http://localhost:3000 (если запущен)
 **Core R&D (ADR-025, Трек 2):**
 - [ ] **Event Horizons**: Прогноз горизонта выхода (Take Profit) по типу события.
 - [ ] **Global Risk Factor**: Учет VIX, S&P 500, Brent (Yahoo Finance).
+- [ ] **Multi-Horizon Forecasting**: Разные модели для краткосрочного (1–3 дня), среднесрочного (7–14 дней) и долгосрочного (30+ дней) горизонтов. Параметризация `train_simple_model.py` через `argparse`.
 
 **Moonshot (ADR-025, Трек 3):**
 - [ ] **Fragility Score**: Детекция хрупкости рынка (Black Swans).
